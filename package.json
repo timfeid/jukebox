@@ -1,0 +1,13 @@
+{
+  "name": "gym",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "docker": "scripts/deps.sh && docker build -t jukebox ."
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

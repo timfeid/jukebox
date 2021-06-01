@@ -1,0 +1,57 @@
+.DS_Store
+node_modules
+deploy_key
+
+.deps
+
+# local env files
+*/**/.env
+.env
+.env.local
+.env.*.local
+.env.test
+.env.staging
+.env.production
+.env.development
+.env.dev
+
+# dist
+dist
+cjs
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+.yarnrc
+.yarn
+
+jwt.private.key
+jwt.public.key
+
+report.*
+
+logs
+
+laravel-echo-server.lock
+/dcvctl
+
+!backend/apps/*/secrets/.env.dev
+!backend/apps/*/secrets/.env.production
+!backend/apps/*/secrets/.env.staging
+!faas/apps/*/secrets/.env.staging
+!faas/apps/*/secrets/.env.production
+!faas/apps/*/secrets/.env.dev
+!faas/apps/*/secrets/.env.test
+
+
+/ops/prisma/generated/

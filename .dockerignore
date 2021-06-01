@@ -1,0 +1,12 @@
+*
+!package.json
+!yarn.lock
+!.deps
+!.env
+!packages/
+!tsconfig.json
+!scripts/
+*/**/dist
+*/**/.env
+*/**/node_modules
+!.env

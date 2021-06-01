@@ -1,0 +1,53 @@
+{
+  "name": "@gym/backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "serve": "cat env/.env.local > .env && tsnd --respawn --transpile-only src/server.ts",
+    "cli": "cat env/.env.local > .env && tsnd --respawn --transpile-only src/cli.ts",
+    "pretest": "cat env/.env.test > .env && yarn prisma migrate reset -f",
+    "test": "ts-mocha --paths --file '__tests__/setup.ts' '**/*/*.test.ts' --exit"
+  },
+  "devDependencies": {
+    "@types/debounce": "^1.2.0",
+    "@types/expect": "^24.3.0",
+    "@types/faker": "^5.5.5",
+    "@types/fluent-ffmpeg": "^2.1.17",
+    "@types/koa": "^2.13.1",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.0.3",
+    "apollo-server-testing": "^2.24.0",
+    "chai": "^4.3.4",
+    "class-validator": "^0.13.1",
+    "eslint": "^7.26.0",
+    "faker": "^5.5.3",
+    "mocha": "^8.4.0",
+    "prettier": "^2.3.0",
+    "prisma": "2.22.1",
+    "reflect-metadata": "^0.1.13",
+    "ts-mocha": "^8.0.0",
+    "ts-node-dev": "^1.1.6",
+    "ts-sinon": "^2.0.1",
+    "type-graphql": "^1.1.1",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@gym/ytm-api": "1.0.0",
+    "@prisma/client": "2.22.1",
+    "@suldashi/lame": "^1.2.5",
+    "apollo-server-koa": "^2.24.0",
+    "axios": "^0.21.1",
+    "debounce": "^1.2.1",
+    "dotenv": "^9.0.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "graphql": "^15.5.0",
+    "inquirer": "^8.0.0",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.0.0",
+    "prisma": "^2.22.1",
+    "speaker": "^0.5.3",
+    "ytdl-core": "^4.8.0"
+  }
+}
