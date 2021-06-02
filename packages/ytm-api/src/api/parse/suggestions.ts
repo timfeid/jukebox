@@ -8,28 +8,6 @@ export type Suggestion = {
   runs: Run[]
 }
 
-function parseContent(contents: any) {
-  const results: Suggestion[] = []
-  if (contents) {
-    for (const content of contents) {
-      for (let music of content.musicShelfRenderer.contents) {
-        music = music.musicResponsiveListItemRenderer
-        results.push({
-          query: '',
-          runs: [],
-          // title: music.flexColumns[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text,
-          // albumArt: music.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.pop().url,
-          // album: music.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text.runs[2]?.text,
-          // artist: music.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text,
-          // youtubeId: music.flexColumns[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].navigationEndpoint?.watchEndpoint?.videoId,
-        })
-      }
-    }
-  }
-
-  return results
-}
-
 export function parseSuggestions(rawResults: any) {
   const suggestions: Suggestion[] = []
 
