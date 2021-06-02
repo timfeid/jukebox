@@ -1,26 +1,21 @@
 import ytdl from 'ytdl-core'
 import Speaker from 'speaker'
 import ffmpeg from 'fluent-ffmpeg'
-// @ts-ignore
-import lame from '@suldashi/lame'
 import { SearchResult } from '@gym/ytm-api'
-import fs from 'fs'
-import path from 'path'
-import { Stream } from 'stream'
 import debounce from 'debounce'
-import { pubSub } from './pubsub'
-import { TOPICS } from './resolvers/player.resolver'
 import EventEmitter from 'events'
+import { CurrentSong } from './schema/current-song'
+import { prisma } from './prisma-client'
 
 export class PlayerClass extends EventEmitter {
   private _queue: SearchResult[] = []
-  private _currentSong: SearchResult
+  private _currentSong: CurrentSong
 
   get currentSong () {
     return this._currentSong
   }
 
-  set currentSong (song: SearchResult) {
+  set currentSong (song: CurrentSong) {
     this._currentSong = song
   }
 
@@ -28,12 +23,38 @@ export class PlayerClass extends EventEmitter {
     return this._queue
   }
 
+  setSongDetails (details: ytdl.videoInfo) {
+    this._currentSong.totalTime = parseInt(details.player_response.videoDetails.lengthSeconds, 10)
+    this.emit('started')
+    this.emit('updated')
+  }
+
+  getTimeElapsed(timemark: string) {
+    const [hours, minutes, secondsAndMs] = timemark.split(':')
+    const [seconds] = secondsAndMs.split('.')
+
+    return parseInt(hours, 10) * 3600
+      + parseInt(minutes, 10) * 60
+      + parseInt(seconds, 10)
+  }
+
+  updateProcess ({timemark}: {timemark: string}) {
+    const timeElapsed = this.getTimeElapsed(timemark)
+
+    if (this._currentSong.timeElapsed != timeElapsed) {
+      this._currentSong.timeElapsed = timeElapsed
+      this.emit('updated')
+    }
+  }
+
   play(youtubeUrl: string) {
     const dl = ytdl(youtubeUrl, {
       quality: 'highestaudio',
       filter: 'audioonly',
-    }).on('error', (e) => console.log(e))
-    // const dl = fs.createReadStream(path.join(__dirname, './track.mp3'))
+    })
+
+    dl.on('error', (e) => console.log(e))
+    dl.on('info', this.setSongDetails.bind(this))
 
     const stream = ffmpeg(dl)
       .outputOptions([
@@ -44,16 +65,17 @@ export class PlayerClass extends EventEmitter {
         '-ar 44100'
       ])
 
+    stream.on('progress', this.updateProcess.bind(this))
+
     const speaker = new Speaker()
       .on('close', this.songEnded.bind(this))
 
     stream.pipe(speaker)
-
-    this.emit('play')
   }
 
   add(song: SearchResult) {
     this.queue.push(song)
+    this.emit('added-song')
 
     this.nextSong()
   }
@@ -62,17 +84,28 @@ export class PlayerClass extends EventEmitter {
     this.nextSong(true)
   }, 100)
 
+  nextSongIsCurrentSong() {
+    const currentSong = new CurrentSong(this.queue.shift())
+    currentSong.timeElapsed = 0
+    currentSong.totalTime = 0
+
+    return currentSong
+  }
+
   nextSong (forceNext = false) {
     if (forceNext && this.queue.length === 0) {
       this.currentSong = null
     }
 
     if ((this.currentSong && !forceNext) || this.queue.length === 0) {
+      if (this.queue.length === 0 && forceNext) {
+        this.emit('updated')
+      }
       return
     }
 
     try {
-      this.currentSong = this.queue.shift()
+      this.currentSong = this.nextSongIsCurrentSong()
       if (this.currentSong) {
         Player.play(`https://youtube.com/watch?v=${this.currentSong.youtubeId}`)
       }
@@ -83,3 +116,25 @@ export class PlayerClass extends EventEmitter {
 }
 
 export const Player = new PlayerClass()
+
+Player.on('started', async () => {
+  await prisma.previousPlays.upsert({
+    update: {
+      total: {
+        increment: 1,
+      },
+    },
+    create: {
+      total: 1,
+      artist: Player.currentSong.artist,
+      album: Player.currentSong.album,
+      albumArt: Player.currentSong.albumArt,
+      youtubeId: Player.currentSong.youtubeId,
+      title: Player.currentSong.title,
+      createdAt: new Date(),
+    },
+    where: {
+      youtubeId: Player.currentSong.youtubeId,
+    },
+  })
+})

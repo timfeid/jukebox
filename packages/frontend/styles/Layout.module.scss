@@ -15,7 +15,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   margin: 1rem 0;
-  width: calc(100% - 2rem);
+  width: calc(100% - 1rem);
   max-width: 36rem;
 }
 
@@ -30,20 +30,22 @@
 
 .footerContainer {
   max-width: 36rem;
-  width: calc(100% - 2rem);
+  width: calc(100% - 1rem);
   align-items: center;
   justify-content: center;
   height: 100%;
   display: flex;
   margin: auto;
+  position: relative;
 }
 
 .header {
   width: 100%;
   max-width: 36rem;
+  height: 2.5rem;
   position: relative;
 }
 
 .headerContainer {
-  margin: .5rem 1rem 0;
+  margin: .5rem .5rem 0;
 }

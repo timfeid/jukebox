@@ -1,38 +1,81 @@
 .search {
-  &-container {
+  &Container {
+    z-index: 1;
+    top: 0;
+    left: 0;
+    position: fixed;
+    display: flex;
     width: 100%;
-    position: relative;
+    flex-direction: column;
+    align-items: center;
   }
-  &-button {
+
+  &Form {
+    display: flex;
+    width: 100%;
+    padding: .5rem 0;
+    justify-content: center;
+    &Prefix,
+    &Suffix {
+      width: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &Button {
     height: 40px;
     align-items: center;
     display: flex;
     cursor: pointer;
   }
-  &-input {
-    width: 100%;
+  &Input {
+    max-width: calc(100% - 1rem);
+    flex-grow: 1;
+    padding: .25rem 1rem;
     background-color: #212121;
     border: 1px solid lighten(#212121, 5%);
-    font-size: 1.25rem;
+    font-size: 1rem;
+    margin: 0;
+    border-radius: 1rem;
     &:focus {
       border: 1px solid lighten(#212121, 5%);
     }
+    &Closed {
+      border-radius: .25rem;
+    }
   }
 
-  &-results {
-    background: #212121;
-    border: 1px solid lighten(#212121, 5%);
+  &Results,
+  &Suggestions {
+    background: #000000;
     width: 100%;
-    position: absolute;
     top: 100%;
     display: flex;
-    max-height: 36rem;
+    height: calc(100vh - 3rem);
     overflow-y: auto;
     overflow-x: hidden;
     flex-direction: column;
-    &-item {
+
+  }
+
+  &Results {
+    &Item {
       padding: 1rem;
       border-bottom: 1px solid lighten(#212121, 5%);
     }
   }
+
+  &Suggestions {
+    &Item {
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      span {
+        font-weight: 100;
+      }
+    }
+  }
+
 }

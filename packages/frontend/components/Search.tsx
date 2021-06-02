@@ -1,22 +1,33 @@
 import React, { useEffect } from 'react'
 import { request } from '../fetcher/graphql'
-import search from '../styles/Search.module.scss'
+import Styles from '../styles/Search.module.scss'
 import SongCard from './SongCard'
-import { FaSearch, FaSpinner } from 'react-icons/fa'
+import { FaTimes, FaSearch, FaSpinner, FaArrowLeft } from 'react-icons/fa'
 import debounce from 'debounce'
+import { Suggestion } from '@gym/ytm-api/src/api/parse/suggestions'
 
+type State = {
+  value: string
+  results: null | any[]
+  showSearch: boolean
+  loading: boolean
+  suggestions: Suggestion[]
+}
 export default class Search extends React.Component {
-  state = {
+  state: State = {
     value: '',
     results: null,
     showSearch: false,
     loading: false,
+    suggestions: [],
   }
 
 
 
-  submit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  submit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault()
+    }
 
     this.setState({
       loading: true,
@@ -41,11 +52,14 @@ export default class Search extends React.Component {
   setSearchValue = (e: React.SyntheticEvent) => {
     this.setState({
       value: (e.target as HTMLTextAreaElement).value,
+      results: null,
     })
+
+    this.delayPopulateSuggestions()
   }
 
   addSongToQueue = async (song) => {
-    this.delayReset.flush()
+    this.resetSearch()
 
     await request(`mutation($artist: String!, $album: String!, $albumArt: String!, $title: String!, $youtubeId: String!) {
       play(artist: $artist, album: $album, albumArt: $albumArt, title: $title, youtubeId: $youtubeId) {
@@ -58,6 +72,7 @@ export default class Search extends React.Component {
         }
       }
     }`, song)
+
   }
 
   resetSearch = () => {
@@ -65,54 +80,133 @@ export default class Search extends React.Component {
       showSearch: false,
       value: '',
       results: null,
+      suggestions: [],
     })
   }
 
-  delayReset = debounce(this.resetSearch, 300)
+  populateSuggestions = async () => {
+    const response = await request(`query($input: String!) {
+      suggestions(input: $input) {
+        runs {
+          text
+          bold
+        }
+        query
+      }
+    }`, {input: this.state.value})
 
-  showSearch = (e: React.MouseEvent) => {
-    e.stopPropagation()
+    this.setState({
+      suggestions: response.suggestions,
+    })
+  }
+
+  delayPopulateSuggestions = debounce(this.populateSuggestions, 150)
+
+  showSearch = () => {
+    console.log('hi')
     this.setState({
       showSearch: true,
     })
   }
 
-  renderSearchButton() {
+  componentDidMount() {
+    // document.addEventListener('click', this.resetSearch)
+  }
+
+  componentWillUnmount() {
+    // document.removeEventListener('click', this.resetSearch)
+  }
+
+  prefix () {
+    if (!this.state.showSearch) {
+      return
+    }
+
     return (
-      <div className={search['search-button']} onClick={this.showSearch}>
-        <FaSearch className="mr-2" /> Search
+      <div className={Styles.searchFormPrefix}>
+        <FaArrowLeft onClick={this.resetSearch} />
       </div>
     )
   }
 
-  componentDidMount() {
-    document.addEventListener('click', this.resetSearch)
+  suffix () {
+    if (!this.state.showSearch) {
+      return
+    }
+
+    return (
+      <div className={Styles.searchFormSuffix}>
+        <FaTimes onClick={this.resetSearch} />
+      </div>
+    )
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.resetSearch)
+  results () {
+    if (!this.state.showSearch || (!this.state.results && !this.state.loading)) {
+      return
+    }
+
+    return (
+      <div className={Styles.searchResults}>
+        {this.getResults()}
+      </div>
+    )
+  }
+
+  setAndSearch (value: string) {
+    this.setState({
+      value,
+      suggestions: [],
+    }, this.submit.bind(this))
+  }
+
+  suggestions () {
+    if (!this.state.showSearch || this.state.results) {
+      return
+    }
+
+    return (
+      <div className={Styles.searchSuggestions}>
+        {this.state.suggestions.map(suggestion => (
+          <div className={Styles.searchSuggestionsItem} key={suggestion.query} onClick={() => this.setAndSearch(suggestion.query)}>
+            <FaSearch className="mr-4" />
+            <div>
+              {suggestion.runs.map(run => {
+                return run.bold ? <strong>{run.text}</strong> : <span>{run.text}</span>
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
   }
 
   render() {
-    return this.state.showSearch ? this.renderSearchBar() : this.renderSearchButton()
-  }
-
-  renderSearchBar() {
     return (
-      <div className={search['search-container']}>
-        <form onSubmit={this.submit}>
-          <input autoFocus={true} className={`input-text ${search['search-input']}`} type="text" value={this.state.value} onChange={this.setSearchValue} />
+      <div className={Styles.searchContainer}>
+        <form onSubmit={this.submit} className={Styles.searchForm}>
+          {this.prefix()}
+          <input
+            placeholder="Search music"
+            onFocus={this.showSearch}
+            className={`input-text ${Styles.searchInput} ${this.state.showSearch ? Styles.searchInputOpen : Styles.searchInputClosed}`}
+            type="text"
+            value={this.state.value}
+            onChange={this.setSearchValue}
+          />
+
+          {this.suffix()}
         </form>
-        <div className={search['search-results']}>
-          {this.getResults()}
-        </div>
+
+        {this.results()}
+        {this.suggestions()}
       </div>
     )
   }
 
   getResults = () => {
     if (this.state.loading) {
-      return <div className="p-2"><FaSpinner className="spinner" style={{width: '1rem', height: '1rem'}} /></div>
+      return <div className="pl-4 pt-2"><FaSpinner className="spinner" style={{width: '1rem', height: '1rem'}} /></div>
     }
     if (this.state.results) {
       if (this.state.results.length === 0) {
@@ -120,7 +214,11 @@ export default class Search extends React.Component {
       }
 
       return this.state.results.map((result, index) => (
-        <div onClick={() => this.addSongToQueue(result)} className={`cursor-pointer ${search['search-results-item']}`} key={index}>
+        <div
+          onClick={() => this.addSongToQueue(result)}
+          className={`cursor-pointer ${Styles.searchResultsItem}`}
+          key={index}
+        >
           <SongCard {...result} />
         </div>
       ))

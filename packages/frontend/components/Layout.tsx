@@ -24,11 +24,7 @@ const Layout = (props) => {
     <div className={styles.main}>
       {props.children}
     </div>
-    <footer className={styles.footer}>
-      <div className={styles.footerContainer}>
-        <NowPlaying />
-      </div>
-    </footer>
+    <NowPlaying />
   </div>
 }
 

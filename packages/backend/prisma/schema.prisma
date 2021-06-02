@@ -10,7 +10,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Franchises {
-  id String @id @default(cuid())
-  name String
+model PreviousSearches {
+  id          String    @id @default(cuid())
+  query       String    @unique()
+  updatedAt   DateTime  @updatedAt()
+}
+
+model PreviousPlays {
+  title       String
+  album       String
+  albumArt    String
+  artist      String
+  youtubeId   String    @unique() @id
+  total       Int
+  createdAt   DateTime
+  updatedAt   DateTime  @updatedAt
 }

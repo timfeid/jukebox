@@ -1,0 +1,234 @@
+{
+  "responseContext": {
+    "serviceTrackingParams": [
+      {
+        "service": "CSI",
+        "params": [
+          {
+            "key": "c",
+            "value": "WEB_REMIX"
+          },
+          {
+            "key": "cver",
+            "value": "1.20210531.00.00"
+          },
+          {
+            "key": "yt_li",
+            "value": "0"
+          },
+          {
+            "key": "GetMusicSearchSuggestions_rid",
+            "value": "0x000ac4702fa8fdb8"
+          }
+        ]
+      },
+      {
+        "service": "GFEEDBACK",
+        "params": [
+          {
+            "key": "logged_in",
+            "value": "0"
+          },
+          {
+            "key": "e",
+            "value": "24036085,23804281,24005802,23891344,24051637,23946420,23884386,24042868,23996830,24010466,23968099,24037806,23966208,23891346,23983296,24030040,24044134,23934970,1714240,24042870,24044575,24037794,24590381,23882685,24040786,23735347,24027649,24004644,24016853,23968386,24001373,24027133,24051457,24035275,23974595,24045213,23857949,23944779,23918597,24023961,23744176,24030993,23843507,24013015,24050517,23973490,24021255,24007246"
+          }
+        ]
+      },
+      {
+        "service": "ECATCHER",
+        "params": [
+          {
+            "key": "client.version",
+            "value": "1.20000101"
+          },
+          {
+            "key": "client.name",
+            "value": "WEB_REMIX"
+          }
+        ]
+      }
+    ]
+  },
+  "trackingParams": "CAAQi24iEwj8vNm98vnwAhVa_VEKHXvhDF0=",
+  "contents": [
+    {
+      "searchSuggestionsSectionRenderer": {
+        "contents": [
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  },
+                  {
+                    "text": " meduza"
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAcQpWEYASITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart meduza"
+                }
+              },
+              "trackingParams": "CAcQpWEYASITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          },
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAYQpWEYAiITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart"
+                }
+              },
+              "trackingParams": "CAYQpWEYAiITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          },
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  },
+                  {
+                    "text": " alok remix"
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAUQpWEYAyITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart alok remix"
+                }
+              },
+              "trackingParams": "CAUQpWEYAyITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          },
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  },
+                  {
+                    "text": " mayday parade"
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAQQpWEYBCITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart mayday parade"
+                }
+              },
+              "trackingParams": "CAQQpWEYBCITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          },
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  },
+                  {
+                    "text": " remix"
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAMQpWEYBSITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart remix"
+                }
+              },
+              "trackingParams": "CAMQpWEYBSITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          },
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  },
+                  {
+                    "text": " good boys & medusa"
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAIQpWEYBiITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart good boys & medusa"
+                }
+              },
+              "trackingParams": "CAIQpWEYBiITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          },
+          {
+            "searchSuggestionRenderer": {
+              "suggestion": {
+                "runs": [
+                  {
+                    "text": "piece of your heart",
+                    "bold": true
+                  },
+                  {
+                    "text": " meduza remix"
+                  }
+                ]
+              },
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAEQpWEYByITCPy82b3y-fACFVr9UQode-EMXQ==",
+                "searchEndpoint": {
+                  "query": "piece of your heart meduza remix"
+                }
+              },
+              "trackingParams": "CAEQpWEYByITCPy82b3y-fACFVr9UQode-EMXQ==",
+              "icon": {
+                "iconType": "SEARCH"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

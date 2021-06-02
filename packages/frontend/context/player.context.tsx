@@ -1,6 +1,7 @@
 import { useSubscription, gql } from '@apollo/client'
 import { createContext, Dispatch, useContext, useEffect, useReducer } from 'react'
 import {SearchResult} from '../../backend/src/schema/search'
+import {CurrentSong} from '../../backend/src/schema/current-song'
 import apolloClient from '../apollo-client'
 import { request } from '../fetcher/graphql'
 
@@ -10,7 +11,7 @@ type PlayerStore = {
 }
 
 export type PlayerState = {
-  currentSong: SearchResult | null,
+  currentSong: CurrentSong | null,
   queue: SearchResult[]
 }
 
@@ -27,7 +28,7 @@ type PlayerActionQueue = {
 
 type PlayerActionCurrentSong = {
   type: PlayerActions.SET_CURRENT_SONG,
-  song: SearchResult
+  song: CurrentSong
 }
 
 type PlayerActionPopulate = {
@@ -83,6 +84,8 @@ export const getCurrentSong = (dispatch: (value: PlayerAction) => void) => {
         album
         albumArt
         artist
+        timeElapsed
+        totalTime
       }
       queue {
         title
@@ -113,6 +116,8 @@ export const subscribe = () => {
               album
               albumArt
               artist
+              timeElapsed
+              totalTime
             }
             queue {
               title

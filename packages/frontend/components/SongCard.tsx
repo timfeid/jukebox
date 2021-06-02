@@ -1,4 +1,4 @@
-export default function SongCard ({title, artist, albumArt, album, className}) {
+export default function SongCard ({title, artist, albumArt, album, className = undefined}) {
   return (
     <div className={`flex ${className}`}>
       <img className="mr-4" src={albumArt} width="60" height="60" />
