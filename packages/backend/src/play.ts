@@ -78,10 +78,8 @@ export class PlayerClass extends EventEmitter {
       ])
 
     stream.on('progress', p => {
-      console.log(p)
       this.updateProcess(p)
-      console.log(p.timeElapsed)
-      last = p.timeElapsed
+      last = p.timemark
     })
 
     stream.on('error', (e) => {
