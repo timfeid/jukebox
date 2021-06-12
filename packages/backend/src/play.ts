@@ -65,9 +65,11 @@ export class PlayerClass extends EventEmitter {
       console.log(from, 'ERROR')
       console.log(e)
       console.log(e.stack)
-      this.restart(youtubeUrl, last)
+      if (from === 'STREAM') {
+        this.restart(youtubeUrl, last)
+      }
     }
-    dl.on('error', error.bind(this, ['DOWNLOAD']))
+    dl.on('error', error.bind(this, 'DOWNLOAD'))
     dl.on('info', this.setSongDetails.bind(this))
 
     const stream = ffmpeg(dl)
@@ -84,10 +86,10 @@ export class PlayerClass extends EventEmitter {
       last = p.timemark
     })
 
-    stream.on('error', error.bind(this, ['STREAM']))
+    stream.on('error', error.bind(this, 'STREAM'))
 
     const speaker = new Speaker()
-      .on('error', error.bind(this, ['STREAM']))
+      .on('error', error.bind(this, 'SPEAKER'))
       .on('close', this.songEnded.bind(this))
 
     stream.pipe(speaker)
@@ -110,6 +112,7 @@ export class PlayerClass extends EventEmitter {
   }
 
   songEnded = debounce(function () {
+    console.log('sond ended.')
     this.nextSong(true)
   }, 100)
 
