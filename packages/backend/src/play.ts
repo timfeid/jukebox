@@ -43,7 +43,6 @@ export class PlayerClass extends EventEmitter {
     const timeElapsed = this.getTimeElapsed(timemark)
 
     if (this._currentSong.timeElapsed != timeElapsed) {
-      console.log(timeElapsed)
       this._currentSong.timeElapsed = timeElapsed
       this.emit('updated')
     }
@@ -62,12 +61,13 @@ export class PlayerClass extends EventEmitter {
 
   playDl(dl: Readable, youtubeUrl: string) {
     let last = '00:00:00.000'
-    dl.on('error', (e) => {
-      console.log('DOWNLOAD ERROR')
+    const error = (from: string, e: Error) => {
+      console.log(from, 'ERROR')
       console.log(e)
       console.log(e.stack)
       this.restart(youtubeUrl, last)
-    })
+    }
+    dl.on('error', error.bind(this, ['DOWNLOAD']))
     dl.on('info', this.setSongDetails.bind(this))
 
     const stream = ffmpeg(dl)
@@ -84,19 +84,10 @@ export class PlayerClass extends EventEmitter {
       last = p.timemark
     })
 
-    stream.on('error', (e) => {
-      console.log('STREAM ERROR')
-      console.log(e)
-      console.log(e.stack)
-      this.nextSong()
-    })
+    stream.on('error', error.bind(this, ['STREAM']))
 
     const speaker = new Speaker()
-      .on('error', (e) => {
-        console.log('SPEAKER ERROR')
-        console.log(e)
-        console.log(e.stack)
-      })
+      .on('error', error.bind(this, ['STREAM']))
       .on('close', this.songEnded.bind(this))
 
     stream.pipe(speaker)
