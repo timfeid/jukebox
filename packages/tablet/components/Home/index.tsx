@@ -16,7 +16,7 @@ export default class Home extends React.Component {
     if (this.context.state.sun) {
       const sunrise = this.context.state.sun.nextSunrise.subtract(1, 'd')
       const sunset = this.context.state.sun.nextSunset
-      const percentage = sunset.diff(dayjs()) / sunset.diff(sunrise) * 100
+      const percentage = 100 - (sunset.diff(dayjs()) / sunset.diff(sunrise) * 100)
       sun = (
         <div style={{width: '200px'}}>
           <CircularProgressbarWithChildren value={percentage}>
