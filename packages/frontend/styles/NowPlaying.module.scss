@@ -1,6 +1,8 @@
 .nowPlaying {
   border-top: 2px solid #fff;
   width: 100%;
+  position: fixed;
+  bottom: 0;
   &Container {
     max-width: 36rem;
     padding: .5rem 0;
