@@ -42,7 +42,7 @@ export class PlayerClass extends EventEmitter {
   updateProcess ({timemark}: {timemark: string}) {
     const timeElapsed = this.getTimeElapsed(timemark)
 
-    if (this._currentSong.timeElapsed != timeElapsed) {
+    if (this._currentSong && this._currentSong.timeElapsed != timeElapsed) {
       this._currentSong.timeElapsed = timeElapsed
       this.emit('updated')
     }
