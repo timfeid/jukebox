@@ -1,11 +1,11 @@
-import ytdl from 'ytdl-core'
-import Speaker from 'speaker'
-import ffmpeg from 'fluent-ffmpeg'
 import { SearchResult } from '@gym/ytm-api'
 import debounce from 'debounce'
 import EventEmitter from 'events'
-import { CurrentSong } from './schema/current-song'
+import ffmpeg from 'fluent-ffmpeg'
+import Speaker from 'speaker'
+import ytdl from 'ytdl-core'
 import { prisma } from './prisma-client'
+import { CurrentSong } from './schema/current-song'
 
 export class PlayerClass extends EventEmitter {
   private _queue: SearchResult[] = []
@@ -53,7 +53,11 @@ export class PlayerClass extends EventEmitter {
       filter: 'audioonly',
     })
 
-    dl.on('error', (e) => console.log(e))
+    dl.on('error', (e) => {
+      console.log('DOWNLOAD ERROR')
+      console.log(e)
+      console.log(e.stack)
+    })
     dl.on('info', this.setSongDetails.bind(this))
 
     const stream = ffmpeg(dl)
@@ -66,8 +70,18 @@ export class PlayerClass extends EventEmitter {
       ])
 
     stream.on('progress', this.updateProcess.bind(this))
+    stream.on('error', (e) => {
+      console.log('DOWNLOAD ERROR')
+      console.log(e)
+      console.log(e.stack)
+    })
 
     const speaker = new Speaker()
+      .on('error', (e) => {
+        console.log('DOWNLOAD ERROR')
+        console.log(e)
+        console.log(e.stack)
+      })
       .on('close', this.songEnded.bind(this))
 
     stream.pipe(speaker)
