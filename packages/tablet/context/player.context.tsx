@@ -1,11 +1,11 @@
-import { useSubscription, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { createContext, Dispatch, useContext, useEffect, useReducer } from 'react'
-import {SearchResult} from '../../backend/src/schema/search'
-import {CurrentSong} from '../../backend/src/schema/current-song'
+import { CurrentSong } from '../../backend/src/schema/current-song'
+import { SearchResult } from '../../backend/src/schema/search'
 import apolloClient from '../apollo-client'
 import { request } from '../fetcher/graphql'
 
-type PlayerStore = {
+export type PlayerStore = {
   state: PlayerState
   dispatch?: Dispatch<PlayerAction>
 }

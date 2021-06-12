@@ -1,14 +1,17 @@
-import { ApolloClient, ApolloLink, InMemoryCache, split } from "@apollo/client"
-import { HttpLink } from "@apollo/client"
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, split } from "@apollo/client"
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from "@apollo/client/utilities"
+import { config } from "./config"
+
+const graphqlEndpoint = config.graphqlEndpoint
+const wsEndpoint = graphqlEndpoint.replace(/https?:/, 'ws:')
 
 const httpLink = new HttpLink({
-  uri: "http://10.30.0.16:3000/graphql",
+  uri: graphqlEndpoint,
 })
 
 const wsLink = process.browser ? new WebSocketLink({
-  uri: "ws://10.30.0.16:3000/graphql",
+  uri: wsEndpoint,
   options: {
     reconnect: true
   }

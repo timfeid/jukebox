@@ -1,6 +1,4 @@
-import { useHomeContext, Weather } from "../context/home"
-import { fetch, request } from "../fetcher/graphql"
-import SongCard from "./SongCard"
+import { useHomeContext } from "../context/home"
 import WeatherIcon from "./WeatherIcon"
 
 export default function WeatherComponent () {
@@ -10,8 +8,11 @@ export default function WeatherComponent () {
     return null
   }
 
+  let weather = state.weather.state
+  weather = weather[0].toUpperCase() + weather.substring(1)
+
   return (
-    <div>
+    <div className="text-center">
       <div className="text-3xl">Livingston, NJ</div>
         <WeatherIcon
           title={state.weather.state}
@@ -19,7 +20,7 @@ export default function WeatherComponent () {
           size={220}
         />
         <div className="text-xl">
-          {state.weather.temperature} &deg;{state.weather.unit}
+          {weather}, {state.weather.temperature} &deg;{state.weather.unit}
         </div>
         <div>
           {false}

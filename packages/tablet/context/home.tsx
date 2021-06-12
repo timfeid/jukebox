@@ -1,14 +1,15 @@
+import dayjs from 'dayjs';
 import {
-  Auth,
   createConnection,
-  subscribeEntities,
-  subscribeServices,
-  createLongLivedTokenAuth,
+
+
+  createLongLivedTokenAuth, subscribeEntities,
+  subscribeServices
 } from "home-assistant-js-websocket";
 import { createContext, Dispatch, useContext, useEffect, useReducer } from "react";
 import icons from "../icons";
 
-type HomeStore = {
+export type HomeStore = {
   state: HomeState
   dispatch?: Dispatch<HomeAction>
 }
@@ -43,16 +44,33 @@ export type Weather = {
   humidity: number
 }
 
+export type UVIndex = {
+  description: string
+  value: number
+  updatedAt: dayjs.Dayjs
+}
+
+export type Sun = {
+  nextSunset: dayjs.Dayjs
+  nextSunrise: dayjs.Dayjs
+  lastChanged: dayjs.Dayjs
+  isDaytime: boolean
+}
+
 export type HomeState = {
   loading: boolean,
   thermostats: Thermostat[]
   weather: Weather
+  UVIndex: UVIndex
+  sun: Sun
 }
 
 const initialState: HomeState = {
   loading: true,
   thermostats: [],
   weather: null,
+  UVIndex: null,
+  sun: null,
 }
 
 export const HomeContext = createContext<HomeStore>({ state: initialState })
@@ -178,12 +196,31 @@ function findWeather(entities): Weather {
   }
 }
 
+function findUVIndex(entities): UVIndex {
+  return {
+    description: entities['sensor.current_uv_level'].state,
+    value: parseFloat(entities['sensor.current_uv_index'].state),
+    updatedAt: dayjs(entities['sensor.current_uv_index'].last_updated),
+  }
+}
+
+function findSun(entities): Sun {
+  return {
+    nextSunrise: dayjs(entities['sun.sun'].attributes.next_rising),
+    nextSunset: dayjs(entities['sun.sun'].attributes.next_setting),
+    isDaytime: entities['sun.sun'].state === 'above_horizon',
+    lastChanged: dayjs(entities['sun.sun'].last_changed),
+  }
+}
+
 function convert(entities): HomeState {
   console.log(entities)
   return {
     loading: false,
     thermostats: findClimates(entities),
     weather: findWeather(entities),
+    UVIndex: findUVIndex(entities),
+    sun: findSun(entities),
   }
 }
 

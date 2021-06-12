@@ -1,14 +1,12 @@
-import { Component, createContext, useContext, useState } from "react"
-import WeatherIcon from "../components/WeatherIcon";
-import SwipableViews from 'react-swipeable-views'
-import layout from '../styles/Layout.module.scss'
+import { useState } from "react";
+import { FaHome, FaMusic } from 'react-icons/fa';
+import SwipableViews from 'react-swipeable-views';
+import Home from "../components/Home";
 import NowPlaying from "../components/NowPlaying";
-import Player from '../components/Player'
-import Thermostat from '../components/Thermostat'
-import {FaHome, FaMusic} from 'react-icons/fa'
-import { subscribe, useHomeContext } from '../context/home'
-import FlipClock from '../components/FlipClock'
-import Weather from '../components/Weather'
+import Player from '../components/Player';
+import Thermostat from '../components/Thermostat';
+import { useHomeContext } from '../context/home';
+import layout from '../styles/Layout.module.scss';
 
 export default function index() {
 
@@ -18,9 +16,16 @@ export default function index() {
 
   const styles = {
     slideStyle: {
+      width: '100%',
       height: '100%',
     },
+    hello: {
+      width: '100%',
+      height: '100%',
+    },
+
     containerStyle: {
+      width: '100%',
       height: '100%',
     },
     slide: {
@@ -68,27 +73,13 @@ export default function index() {
 
         <SwipableViews
           axis="y"
+          style={styles.hello}
           slideStyle={styles.slideStyle}
           containerStyle={styles.containerStyle}
           onChangeIndex={index => setIndex(index)}
-          ignoreNativeScroll
         >
-          <div className="grid grid-cols-3 items-center justify-center">
-
-            <div>
-              <FlipClock />
-            </div>
-            <div className="flex flex-col items-center justify-center mt-12">
-              <Weather />
-            </div>
-            {theromstats()}
-            <pre>
-              {false ? JSON.stringify(data, null, 2) : ''}
-            </pre>
-          </div>
-          <div>
-            <Player />
-          </div>
+          <Home />
+          <Player />
         </SwipableViews>
       </div>
       <NowPlaying />

@@ -1,10 +1,11 @@
 import req from 'graphql-request'
 import swr from 'swr'
+import { config } from '../config'
 
 export function fetch (query: string, variables?: Record<string, any>) {
   return swr(query, (query) => request(query, variables))
 }
 
 export function request (query: string, variables?: Record<string, any>) {
-  return req('http://10.30.0.16:3000/graphql', query, variables)
+  return req(config.graphqlEndpoint, query, variables)
 }

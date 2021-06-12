@@ -1,0 +1,29 @@
+@use "sass:math";
+$uvSize: 200px;
+
+.queue {
+  width: 25rem;
+  border-left: 2px solid rgba(255,255,255,.4);
+  padding: 0 2rem;
+  margin-left: 2rem;
+}
+
+.uvIndex {
+  width: $uvSize;
+  height: $uvSize;
+  border-radius: math.div($uvSize, 2);
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  &Description {
+    font-size: 1.25rem;
+  }
+  &Number {
+    font-size: 3rem;
+  }
+  &Updated {
+    font-size: .85rem;
+  }
+}
