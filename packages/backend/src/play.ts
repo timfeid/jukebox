@@ -60,7 +60,10 @@ export class PlayerClass extends EventEmitter {
   }
 
   playDl(dl: Readable, youtubeUrl: string) {
+    let er = false
+
     const error = (from: string, e: Error) => {
+      er = true
       console.log(from, 'ERROR')
       console.log(e)
       console.log(e.stack)
@@ -86,7 +89,11 @@ export class PlayerClass extends EventEmitter {
 
     const speaker = new Speaker()
       .on('error', error.bind(this, 'SPEAKER'))
-      .on('close', this.songEnded.bind(this))
+      .on('close', () => {
+        if (!er) {
+          this.songEnded()
+        }
+      })
 
     stream.pipe(speaker)
   }
@@ -108,7 +115,6 @@ export class PlayerClass extends EventEmitter {
   }
 
   songEnded = debounce(function () {
-    console.log('sond ended.')
     this.nextSong(true)
   }, 100)
 
