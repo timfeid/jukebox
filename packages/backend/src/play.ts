@@ -48,25 +48,24 @@ export class PlayerClass extends EventEmitter {
     }
   }
 
-  restart(youtubeUrl: string, begin: string) {
-    console.log('restart called from', begin)
+  restart(youtubeUrl: string) {
+    console.log('restart called from', this.currentSong.timeElapsed)
     const dl = ytdl(youtubeUrl, {
       quality: 'highestaudio',
       filter: 'audioonly',
-      begin,
+      begin: `${this.currentSong.timeElapsed}s`,
     })
 
     this.playDl(dl, youtubeUrl)
   }
 
   playDl(dl: Readable, youtubeUrl: string) {
-    let last = '00:00:00.000'
     const error = (from: string, e: Error) => {
       console.log(from, 'ERROR')
       console.log(e)
       console.log(e.stack)
       if (from === 'STREAM') {
-        this.restart(youtubeUrl, last)
+        this.restart(youtubeUrl)
       }
     }
     dl.on('error', error.bind(this, 'DOWNLOAD'))
@@ -81,10 +80,7 @@ export class PlayerClass extends EventEmitter {
         '-ar 44100'
       ])
 
-    stream.on('progress', p => {
-      this.updateProcess(p)
-      last = p.timemark
-    })
+    stream.on('progress', this.updateProcess.bind(this))
 
     stream.on('error', error.bind(this, 'STREAM'))
 
