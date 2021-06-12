@@ -3,6 +3,7 @@ import debounce from 'debounce'
 import EventEmitter from 'events'
 import ffmpeg from 'fluent-ffmpeg'
 import Speaker from 'speaker'
+import { Readable } from 'stream'
 import ytdl from 'ytdl-core'
 import { prisma } from './prisma-client'
 import { CurrentSong } from './schema/current-song'
@@ -47,17 +48,23 @@ export class PlayerClass extends EventEmitter {
     }
   }
 
-  play(youtubeUrl: string) {
+  restart(youtubeUrl: string, begin: string) {
     const dl = ytdl(youtubeUrl, {
       quality: 'highestaudio',
       filter: 'audioonly',
+      begin,
     })
 
+    this.playDl(dl, youtubeUrl)
+  }
+
+  playDl(dl: Readable, youtubeUrl: string) {
+    let last = '00:00:00.000'
     dl.on('error', (e) => {
       console.log('DOWNLOAD ERROR')
       console.log(e)
       console.log(e.stack)
-      this.nextSong()
+      this.restart(youtubeUrl, last)
     })
     dl.on('info', this.setSongDetails.bind(this))
 
@@ -70,9 +77,14 @@ export class PlayerClass extends EventEmitter {
         '-ar 44100'
       ])
 
-    stream.on('progress', this.updateProcess.bind(this))
+    stream.on('progress', p => {
+      this.updateProcess(p)
+      console.log(p.timeElapsed)
+      last = p.timeElapsed
+    })
+
     stream.on('error', (e) => {
-      console.log('DOWNLOAD ERROR')
+      console.log('STREAM ERROR')
       console.log(e)
       console.log(e.stack)
       this.nextSong()
@@ -80,13 +92,22 @@ export class PlayerClass extends EventEmitter {
 
     const speaker = new Speaker()
       .on('error', (e) => {
-        console.log('DOWNLOAD ERROR')
+        console.log('SPEAKER ERROR')
         console.log(e)
         console.log(e.stack)
       })
       .on('close', this.songEnded.bind(this))
 
     stream.pipe(speaker)
+  }
+
+  play(youtubeUrl: string) {
+    const dl = ytdl(youtubeUrl, {
+      quality: 'highestaudio',
+      filter: 'audioonly',
+    })
+
+    this.playDl(dl, youtubeUrl)
   }
 
   add(song: SearchResult) {
