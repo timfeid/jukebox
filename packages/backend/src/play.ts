@@ -57,6 +57,7 @@ export class PlayerClass extends EventEmitter {
       console.log('DOWNLOAD ERROR')
       console.log(e)
       console.log(e.stack)
+      this.nextSong()
     })
     dl.on('info', this.setSongDetails.bind(this))
 
@@ -74,6 +75,7 @@ export class PlayerClass extends EventEmitter {
       console.log('DOWNLOAD ERROR')
       console.log(e)
       console.log(e.stack)
+      this.nextSong()
     })
 
     const speaker = new Speaker()
