@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 import Koa from 'koa'
 import koaBody from 'koa-bodyparser'
 import { createApolloServer } from './apollo-server'
@@ -11,22 +11,22 @@ app.use(async (context, next) => {
   let matched
   if (!devices.length) {
 
-    try {
+    // try {
 
-      const response = await axios.get('http://10.30.0.1/QOS_device_info.htm', {
-        headers: {
-          authorization: 'Basic YWRtaW46UmVhZHlAODA='
-        }
-      })
+    //   const response = await axios.get('http://10.30.0.1/QOS_device_info.htm', {
+    //     headers: {
+    //       authorization: 'Basic YWRtaW46UmVhZHlAODA='
+    //     }
+    //   })
 
-      const info = eval(response.data)
-      info.map(device => {
-        devices.push(device)
-      })
+    //   const info = eval(response.data)
+    //   info.map(device => {
+    //     devices.push(device)
+    //   })
 
-    } catch (e) {
-      console.error(e)
-    }
+    // } catch (e) {
+    //   console.error(e)
+    // }
 
   }
 
@@ -54,4 +54,5 @@ createApolloServer().then(server => {
 app.on('error', e => console.log(e))
 app.onerror = (e) => { console.log(e) }
 
-export {app}
+export { app }
+
