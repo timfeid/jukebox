@@ -43,12 +43,14 @@ export class PlayerClass extends EventEmitter {
     const timeElapsed = this.getTimeElapsed(timemark)
 
     if (this._currentSong.timeElapsed != timeElapsed) {
+      console.log(timeElapsed)
       this._currentSong.timeElapsed = timeElapsed
       this.emit('updated')
     }
   }
 
   restart(youtubeUrl: string, begin: string) {
+    console.log('restart called from', begin)
     const dl = ytdl(youtubeUrl, {
       quality: 'highestaudio',
       filter: 'audioonly',
