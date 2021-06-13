@@ -67,9 +67,9 @@ export class PlayerClass extends EventEmitter {
       console.log(from, 'ERROR')
       console.log(e)
       console.log(e.stack)
-      if (from === 'STREAM') {
-        this.restart(youtubeUrl)
-      }
+      // if (from === 'STREAM') {
+      //   this.restart(youtubeUrl)
+      // }
     }
     dl.on('error', error.bind(this, 'DOWNLOAD'))
     dl.on('info', this.setSongDetails.bind(this))
@@ -87,9 +87,23 @@ export class PlayerClass extends EventEmitter {
 
     stream.on('error', error.bind(this, 'STREAM'))
 
+
+
+  }
+
+  speaker(stream: ffmpeg.FfmpegCommand) {
+    let er = false
+    console.log('creating a speaker.')
     const speaker = new Speaker()
-      .on('error', error.bind(this, 'SPEAKER'))
+      .on('error', (e) => {
+        er = true
+        console.log('speaker error, lets restart the speaker.', e)
+        // @ts-ignore
+        stream.unpipe(speaker)
+        this.speaker(stream)
+      })
       .on('close', () => {
+        console.log('speaker closed.')
         if (!er) {
           this.songEnded()
         }
