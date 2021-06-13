@@ -78,8 +78,8 @@ export class PlayerClass extends EventEmitter {
       .on('error', (e) => {
         er = true
         console.log('speaker error, lets restart the speaker.', e)
-        // @ts-ignore
-        stream.unpipe(speaker)
+        // // @ts-ignore
+        // stream.unpipe(speaker)
         this.speaker(stream)
       })
       .on('close', () => {
