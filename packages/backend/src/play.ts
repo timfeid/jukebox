@@ -80,12 +80,15 @@ export class PlayerClass extends EventEmitter {
         console.log('speaker error, lets restart the speaker.', e)
         // // @ts-ignore
         // stream.unpipe(speaker)
-        this.speaker(stream)
+        // this.play()
       })
       .on('close', () => {
         console.log('speaker closed.')
         if (!er) {
           this.songEnded()
+        } else {
+          console.log('there was an error')
+          this.play()
         }
       })
 
