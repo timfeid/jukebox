@@ -14,4 +14,7 @@ for (const key of Object.keys(process.env)) {
 
 module.exports = {
   env,
+  typescript: {
+    ignoreBuildErrors: true,
+  }
 }

@@ -249,7 +249,7 @@ export const subscribe = () => {
   useEffect(() => {
     const auth = createLongLivedTokenAuth(
       "https://home.timfeid.com",
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmYWJmMTg0YTY0ZDg0N2M3OTNhNTU5MWJiYWFmNTEzNyIsImlhdCI6MTYyMzQzNTAxMywiZXhwIjoxOTM4Nzk1MDEzfQ.zxokqf7q7IFvUuhgwUVqvbQMLeVXct4TBm4nlEudSKI"
+      process.env.HOME_TOKEN,
     );
 
     createConnection({ auth }).then(connection => {
