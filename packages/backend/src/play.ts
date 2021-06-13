@@ -48,31 +48,7 @@ export class PlayerClass extends EventEmitter {
     }
   }
 
-  restart(youtubeUrl: string) {
-    console.log('restart called from', this.currentSong.timeElapsed)
-    const dl = ytdl(youtubeUrl, {
-      quality: 'highestaudio',
-      filter: 'audioonly',
-      begin: `${this.currentSong.timeElapsed}s`,
-    })
-
-    this.playDl(dl, youtubeUrl)
-  }
-
-  playDl(dl: Readable, youtubeUrl: string) {
-    let er = false
-
-    const error = (from: string, e: Error) => {
-      er = true
-      console.log(from, 'ERROR')
-      console.log(e)
-      console.log(e.stack)
-      // if (from === 'STREAM') {
-      //   this.restart(youtubeUrl)
-      // }
-    }
-    dl.on('error', error.bind(this, 'DOWNLOAD'))
-    dl.on('info', this.setSongDetails.bind(this))
+  playDl(dl: Readable) {
 
     const stream = ffmpeg(dl)
       .outputOptions([
@@ -83,9 +59,13 @@ export class PlayerClass extends EventEmitter {
         '-ar 44100'
       ])
 
+    stream.seekInput(this.currentSong.timeElapsed)
     stream.on('progress', this.updateProcess.bind(this))
 
-    stream.on('error', error.bind(this, 'STREAM'))
+    stream.on('error', (e) => {
+      console.log('stream err')
+      console.log(e)
+    })
 
 
     this.speaker(stream)
@@ -112,13 +92,18 @@ export class PlayerClass extends EventEmitter {
     stream.pipe(speaker)
   }
 
-  play(youtubeUrl: string) {
-    const dl = ytdl(youtubeUrl, {
+  play() {
+    const dl = ytdl(this.currentSong.youtubeId, {
       quality: 'highestaudio',
       filter: 'audioonly',
     })
+    dl.on('error', () => {
+      console.log('download error.')
+      this.play()
+    })
+    dl.on('info', this.setSongDetails.bind(this))
 
-    this.playDl(dl, youtubeUrl)
+    this.playDl(dl)
   }
 
   add(song: SearchResult) {
@@ -155,7 +140,7 @@ export class PlayerClass extends EventEmitter {
     try {
       this.currentSong = this.nextSongIsCurrentSong()
       if (this.currentSong) {
-        Player.play(`https://youtube.com/watch?v=${this.currentSong.youtubeId}`)
+        Player.play()
       }
     } catch (e) {
       console.log(e)
