@@ -88,7 +88,7 @@ export class PlayerClass extends EventEmitter {
     stream.on('error', error.bind(this, 'STREAM'))
 
 
-
+    this.speaker(stream)
   }
 
   speaker(stream: ffmpeg.FfmpegCommand) {
