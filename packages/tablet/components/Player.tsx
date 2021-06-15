@@ -17,7 +17,7 @@ function generateSongQueue(player: PlayerState) {
 export default function Home() {
   const { state } = usePlayerContext()
   return (
-    <div>
+    <div style={{overflow: 'hidden'}}>
       <h1 className={Styles.header}>
         Queue
       </h1>
@@ -25,7 +25,7 @@ export default function Home() {
         {generateSongQueue(state)}
       </div>
 
-      <h1 className={`${Styles.header} mt-8`}>
+      <h1 className={`${Styles.header} mt-6`}>
         Top Songs
       </h1>
       <TopSongs topSongs={state.queue} />

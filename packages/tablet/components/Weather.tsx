@@ -12,18 +12,16 @@ export default function WeatherComponent () {
   weather = weather[0].toUpperCase() + weather.substring(1)
 
   return (
-    <div className="text-center">
+    <div className="flex items-center flex-col">
       <div className="text-3xl">Livingston, NJ</div>
         <WeatherIcon
           title={state.weather.state}
           path={state.weather.icon}
-          size={220}
+          size={100}
         />
-        <div className="text-xl">
-          {weather}, {state.weather.temperature} &deg;{state.weather.unit}
-        </div>
-        <div>
-          {false}
+        <div className="text-3xl">{state.weather.temperature}&deg;{state.weather.unit}</div>
+        <div className="text-xl mt-3">
+          {weather}
         </div>
         <div>
           {state.weather.humidity}% humidity

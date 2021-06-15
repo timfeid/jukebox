@@ -1,5 +1,4 @@
-@use "sass:math";
-$uvSize: 200px;
+$uvSize: 175px;
 
 .queue {
   width: 25rem;
@@ -11,7 +10,7 @@ $uvSize: 200px;
 .uvIndex {
   width: $uvSize;
   height: $uvSize;
-  border-radius: math.div($uvSize, 2);
+  border-radius: 50%;
   border: 2px solid white;
   display: flex;
   align-items: center;

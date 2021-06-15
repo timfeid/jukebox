@@ -7,6 +7,10 @@
   height: calc(100vh - 4rem);
   overflow: hidden;
   flex-grow: 1;
+  &WithPlaying {
+    height: calc(100vh - 12rem);
+
+  }
 }
 
 .contents {

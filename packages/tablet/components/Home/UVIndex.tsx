@@ -2,12 +2,15 @@ import React from 'react';
 import { HomeContext, HomeStore } from '../../context/home';
 import Styles from '../../styles/Home.module.scss';
 
-export default class UVIndex extends React.Component {
+type MyProps = {
+  className?: string
+}
+export default class UVIndex extends React.Component<MyProps> {
 
   static contextType = HomeContext
   context: HomeStore
 
-  render () {
+  render (className = '') {
     const {UVIndex} = this.context.state
 
     if (!UVIndex) {
@@ -15,7 +18,7 @@ export default class UVIndex extends React.Component {
     }
 
     return (
-      <div className={Styles.uvIndex}>
+      <div className={`${Styles.uvIndex} ${this.props.className}`}>
         <div className={Styles.uvIndexUpdated}>
           {this.context.state.UVIndex.updatedAt.format('h:mm A')}
         </div>

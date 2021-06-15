@@ -18,7 +18,7 @@ export default class Home extends React.Component {
       const sunset = this.context.state.sun.nextSunset
       const percentage = 100 - (sunset.diff(dayjs()) / sunset.diff(sunrise) * 100)
       sun = (
-        <div style={{width: '200px'}}>
+        <div style={{width: '175px'}}>
           <CircularProgressbarWithChildren value={percentage}>
             <div className="text-md">
               {this.context.state.sun.isDaytime ? 'Sunset' : 'Sunrise'}
@@ -33,21 +33,16 @@ export default class Home extends React.Component {
     }
 
     return (
-      <div className="flex w-full">
-        <div className="flex-grow flex flex-wrap items-center justify-center">
+      <div className="flex w-full h-full">
+        <div className="flex-grow flex flex-col flex-wrap items-center justify-between">
           <div>
             <FlipClock />
           </div>
-          <div className="flex flex-col items-center justify-center mt-12">
+          <div className="flex flex-col items-center justify-center">
             <WeatherComponent />
           </div>
-          <div className="flex flex-col items-center justify-center mt-12">
-            <UVIndex />
-          </div>
-          <div className="flex flex-col items-center justify-center mt-12">
-            {/* <pre>
-              {JSON.stringify(this.context.state.sun, null, 2)}
-            </pre> */}
+          <div className="flex items-center justify-center">
+            <UVIndex className="mr-5" />
             {sun}
           </div>
         </div>

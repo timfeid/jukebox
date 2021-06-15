@@ -1,11 +1,13 @@
+import { usePlayerContext } from "../context/player.context"
 import { fetch, request } from "../fetcher/graphql"
 import SongCard from "./SongCard"
 
 export default function TopSongs ({topSongs}) {
 
+  const player = usePlayerContext()
   const { data, error } = fetch(`
     query {
-      mostPopularSongs(take: 9) {
+      mostPopularSongs(take: 12) {
         title
         artist
         album
@@ -20,7 +22,7 @@ export default function TopSongs ({topSongs}) {
   }
 
   return (
-    <div className="grid grid-rows-3 grid-flow-col justify-between w-full">
+    <div style={{gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', maxHeight: player.state.currentSong ? '16rem' : '22rem'}} className="grid justify-between w-full">
       {data.mostPopularSongs.map((song, index) => (
         <div key={index} className="flex items-center" style={{width: 'auto'}}>
           <div className="text-5xl mr-8 pb-4 text-pink-300 text-center" style={{opacity: .2, fontFamily: 'Squada One', width: '3rem', minWidth: '3rem'}}>

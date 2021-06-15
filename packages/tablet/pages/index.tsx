@@ -6,11 +6,13 @@ import NowPlaying from "../components/NowPlaying";
 import Player from '../components/Player';
 import Thermostat from '../components/Thermostat';
 import { useHomeContext } from '../context/home';
+import { usePlayerContext } from "../context/player.context";
 import layout from '../styles/Layout.module.scss';
 
 export default function index() {
 
   const home = useHomeContext()
+  const player = usePlayerContext()
 
   const [index, setIndex] = useState(0)
 
@@ -61,15 +63,17 @@ export default function index() {
     ))
   }
 
+  const classes = player.state.currentSong === null ? layout.container : `${layout.container} ${layout.containerWithPlaying}`
+
   return (
-    <div className="flex">
+    <div className={`flex ${player.state.currentSong ? 'playing' : null}`}>
       <div className={layout.nav}>
         <div>
           <FaHome size="24" style={styleForNavIndex(0)} />
           <FaMusic size="24" style={styleForNavIndex(1)} />
         </div>
       </div>
-      <div className={layout.container}>
+      <div className={classes}>
 
         <SwipableViews
           axis="y"
