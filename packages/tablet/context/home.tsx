@@ -25,6 +25,13 @@ type HomeActionSetEntities = {
 
 export type HomeAction = HomeActionSetEntities
 
+export type WasherDryer = {
+  state: 'on' | 'off'
+  completionTime: dayjs.Dayjs
+  cycle: string
+  stateChangedTime: dayjs.Dayjs
+}
+
 export type Thermostat = {
   name: string
   currentTemperature: number
@@ -63,6 +70,8 @@ export type HomeState = {
   weather: Weather
   UVIndex: UVIndex
   sun: Sun
+  dryer: WasherDryer
+  washer: WasherDryer
 }
 
 const initialState: HomeState = {
@@ -71,6 +80,8 @@ const initialState: HomeState = {
   weather: null,
   UVIndex: null,
   sun: null,
+  washer: null,
+  dryer: null,
 }
 
 export const HomeContext = createContext<HomeStore>({ state: initialState })
@@ -213,6 +224,15 @@ function findSun(entities): Sun {
   }
 }
 
+function findWasherDryer(entities, type): WasherDryer {
+  return {
+    state: entities[`switch.${type}`].state,
+    stateChangedTime: dayjs(entities[`switch.${type}`].last_updated),
+    completionTime: dayjs(entities[`sensor.${type}_${type}_completion_time`].state),
+    cycle: entities[`sensor.${type}_${type}_job_state`].state,
+  }
+}
+
 function convert(entities): HomeState {
   console.log(entities)
   return {
@@ -221,6 +241,8 @@ function convert(entities): HomeState {
     weather: findWeather(entities),
     UVIndex: findUVIndex(entities),
     sun: findSun(entities),
+    washer: findWasherDryer(entities, 'washer'),
+    dryer: findWasherDryer(entities, 'dryer'),
   }
 }
 

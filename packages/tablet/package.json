@@ -11,6 +11,7 @@
     "@apollo/client": "^3.3.19",
     "add": "^2.0.6",
     "chart.js": "^3.3.2",
+    "chroma-js": "^2.1.2",
     "debounce": "^1.2.1",
     "dotenv": "^10.0.0",
     "graphql": "^15.5.0",

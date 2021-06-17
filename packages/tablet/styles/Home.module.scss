@@ -10,9 +10,9 @@ $uvSize: 175px;
 .uvIndex {
   width: $uvSize;
   height: $uvSize;
-  border-radius: 50%;
-  border: 2px solid white;
-  display: flex;
+  // border-radius: 50%;
+  // border: 2px solid white;
+  // display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -21,6 +21,7 @@ $uvSize: 175px;
   }
   &Number {
     font-size: 3rem;
+    line-height: 3rem;
   }
   &Updated {
     font-size: .85rem;
