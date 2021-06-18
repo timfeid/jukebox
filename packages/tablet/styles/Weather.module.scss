@@ -1,0 +1,33 @@
+$iconSize: 200px;
+
+.weather {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.area {
+  font-size: 2rem;
+  font-weight: 100;
+}
+
+.temperature {
+  font-size: 3rem;
+}
+
+.icon {
+  position: absolute;
+  opacity: .1;
+  width: $iconSize;
+  justify-content: center;
+}
+
+.iconContainer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: $iconSize * .8;
+  width: $iconSize;
+  position: relative;
+}

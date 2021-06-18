@@ -1,0 +1,21 @@
+.tileContainer {
+  height: 225px;
+  margin: .25rem;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.tile {
+  background: rgba(19, 42, 70, .2);
+  margin: .25rem;
+  // border: 1px solid rgba(255,255,255,.2);
+  border-radius: .25rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 100;
+  text-align: center;
+  margin: 1rem 0;
+}

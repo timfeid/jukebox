@@ -1,6 +1,7 @@
 import { useHomeContext } from "../context/home"
 import WeatherIcon from "./WeatherIcon"
 import chroma from 'chroma-js'
+import Styles from '../styles/Weather.module.scss'
 
 export default function WeatherComponent () {
   const { state } = useHomeContext()
@@ -31,65 +32,24 @@ export default function WeatherComponent () {
     return color(weather / 100)
   }
 
+  function temp(degrees: number) {
+    return degrees.toFixed(0)
+  }
+
   return (
-    <div className="flex flex-col w-full" style={{maxWidth: 800, maxHeight: 300}}>
-      <div className="flex w-full px-12">
-        <div className="flex flex-col justify-center text-center items-start" style={{flex: 1}}>
-          <div className="text-center">
-            <div className="text-3xl font-bold uppercase">Livingston, NJ</div>
-            <div className="text-2xl uppercase">Weather</div>
-          </div>
+    <div className={Styles.weather}>
+      <div className={Styles.iconContainer}>
+        <div className={Styles.icon}>
+          <WeatherIcon
+            title={state.weather.state}
+            path={state.weather.icon}
+            size={200}
+          />
         </div>
-        <div className="flex flex-col justify-center">
-          <div style={{width: 100, margin: 'auto'}}>
-            <WeatherIcon
-              title={state.weather.state}
-              path={state.weather.icon}
-              size={100}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col items-end justify-center text-center" style={{flex: 1}}>
-          <div className="text-center">
-
-            <div className="text-6xl" style={{lineHeight: '3rem'}}>{state.weather.temperature}&deg;{state.weather.unit}</div>
-            <div className="text-xl">
-              {weather}
-            </div>
-          </div>
+        <div className={Styles.temperature}>
+          {temp(state.weather.temperature)}&deg;
         </div>
       </div>
-      <div className="flex w-full pt-4 px-12 justify-between">
-        {state.forecast.map((weather, index) => (
-          <div key={index} className="flex flex-col justify-center items-center">
-            <div>
-              {daysOfTheWeek[weather.date.day()]}
-            </div>
-            <div className="my-1">
-
-              <WeatherIcon
-                title={weather.state}
-                path={weather.icon}
-                size={75}
-              />
-            </div>
-            <div>
-              <span style={{color: getTempColor(weather.tempHigh)}}>
-                {weather.tempHigh}&deg;{state.weather.unit}
-              </span>&nbsp;&nbsp;/&nbsp;&nbsp;
-              <span style={{color: getTempColor(weather.tempLow)}}>
-                {weather.tempLow}&deg;{state.weather.unit}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-        {/* <div>
-          {state.weather.humidity}% humidity
-        </div>
-        <div>
-          {state.weather.windDirection} @ {state.weather.windSpeed}mph
-        </div> */}
     </div>
   )
 }
