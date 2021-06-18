@@ -51,6 +51,16 @@ export type Weather = {
   humidity: number
 }
 
+export type ForecastedWeather = {
+  tempHigh: number
+  tempLow: number
+  windDirection: string
+  windSpeed: number
+  icon: string
+  state: string
+  date: dayjs.Dayjs
+}
+
 export type UVIndex = {
   description: string
   value: number
@@ -72,6 +82,7 @@ export type HomeState = {
   sun: Sun
   dryer: WasherDryer
   washer: WasherDryer
+  forecast: ForecastedWeather[]
 }
 
 const initialState: HomeState = {
@@ -82,6 +93,7 @@ const initialState: HomeState = {
   sun: null,
   washer: null,
   dryer: null,
+  forecast: [],
 }
 
 export const HomeContext = createContext<HomeStore>({ state: initialState })
@@ -233,6 +245,26 @@ function findWasherDryer(entities, type): WasherDryer {
   }
 }
 
+function findForecast(entities) {
+  const forecast: ForecastedWeather[] = []
+
+  const weather = entities['weather.28_byron'].attributes
+
+  weather.forecast.forEach(raw => {
+    forecast.push({
+      tempHigh: raw.temperature,
+      tempLow: raw.templow,
+      windDirection: convertWindDegreesToHumanReadable(raw.wind_bearing),
+      windSpeed: raw.wind_speed,
+      state: raw.condition,
+      icon: getIcon(raw.condition),
+      date: dayjs(raw.datetime),
+    })
+  })
+
+  return forecast
+}
+
 function convert(entities): HomeState {
   console.log(entities)
   return {
@@ -243,6 +275,7 @@ function convert(entities): HomeState {
     sun: findSun(entities),
     washer: findWasherDryer(entities, 'washer'),
     dryer: findWasherDryer(entities, 'dryer'),
+    forecast: findForecast(entities),
   }
 }
 
