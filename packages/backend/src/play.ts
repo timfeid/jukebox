@@ -118,7 +118,7 @@ export class PlayerClass extends EventEmitter {
 
   songEnded = debounce(function () {
     this.nextSong(true)
-  }, 100)
+  }, 750)
 
   nextSongIsCurrentSong() {
     const currentSong = new CurrentSong(this.queue.shift())
