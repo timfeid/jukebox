@@ -24,9 +24,12 @@ export default class Queue extends React.Component {
     }
 
     return (
-      <div className={Styles.queue}>
-        <h1 className="text-xl mb-3 font-alt">On deck</h1>
-        {this.songCards()}
+      <div className={Styles.queueContainer}>
+        <div className={Styles.queue}>
+
+          <h1 className="text-lg mb-3 font-thin text-center">On deck</h1>
+          {this.songCards()}
+        </div>
       </div>
     )
   }

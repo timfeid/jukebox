@@ -10,13 +10,13 @@ import Sun from './Sun';
 import Tile from './Tile'
 import { PlayerContext, PlayerStore, usePlayerContext } from '../../context/player.context';
 
-export default HomeComponent => {
+const HomeComponent = () => {
   const homeContext = useHomeContext()
   const playerContext = usePlayerContext()
 
   return (
-    <div className="flex w-full h-full">
-      <div className={`flex-grow grid grid-cols-${playerContext.state.queue.length ? 3 : 4} auto-rows-min`}>
+    <div className="flex w-full h-full items-center">
+      <div className={`flex-grow grid grid-cols-${playerContext.state.queue.length ? 3 : 4} auto-rows-fr`}>
         <Tile title="Time">
           <div className="text-5xl text-center leading-tight">
             {dayjs().format('MMM D')}<br />
@@ -43,3 +43,5 @@ export default HomeComponent => {
     </div>
   )
 }
+
+export default HomeComponent

@@ -1,10 +1,17 @@
 $uvSize: 175px;
 
-.queue {
+.queueContainer {
   width: 22rem;
   border-left: 2px solid rgba(255,255,255,.4);
-  padding: 0 2rem;
+  height: 100%;
+  padding-left: 2rem;
   margin-left: 2rem;
+}
+
+.queue {
+  background: rgba(19, 42, 70, .2);
+  padding: 1rem 2rem;
+  height: 100%;
 }
 
 .uvIndex {
