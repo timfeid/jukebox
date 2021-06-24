@@ -87,7 +87,7 @@ app.use(async (ctx, next) => {
     if (matchingDevices.length) {
       ctx.device = matchingDevices[0]
       ctx.set('Matched-Device', matchingDevices[0].Name)
-      console.log(matchingDevices[0].Name)
+      // console.log(matchingDevices[0].Name)
     }
 
   }

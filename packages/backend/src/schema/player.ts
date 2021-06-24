@@ -9,4 +9,7 @@ export class PlayerResult {
 
   @Field(type => [SearchResult])
   queue: SearchResult[]
+
+  @Field()
+  isPlayingContinuously: boolean
 }

@@ -13,7 +13,6 @@ describe("youtube parse search", () => {
     expect(parsed[0].album).to.eq('Back In Black')
     expect(parsed[0].youtubeId).to.eq('GL56LY6fE0E')
 
-    console.log(parsed)
   })
 
   // it('parses another version', () => {

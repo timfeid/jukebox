@@ -26,6 +26,13 @@ export class SearchResolver {
     return results.filter(result => !!result.youtubeId)
   }
 
+  @Query(returns => [SearchResult])
+  async playlist(@Arg('browseId') browseId: string) {
+    const results = await API.browse(browseId)
+
+    return results
+  }
+
   @Query(returns => [Suggestion])
   async suggestions(@Arg('input') input: string) {
     try {

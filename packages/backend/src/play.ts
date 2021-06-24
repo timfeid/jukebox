@@ -10,6 +10,7 @@ import {
 import { HaConnection } from './homeassistant/connection'
 
 const MEDIA_PLAYER_ENTITY_ID = process.env.MEDIA_PLAYER_ENTITY_ID
+type QueuedSong = SearchResult & { url?: string }
 
 type MediaPlayerEntity = {
   state: 'idle' | 'playing' | 'unknown'
@@ -19,7 +20,7 @@ type MediaPlayerEntity = {
   url: string
 }
 export class PlayerClass extends EventEmitter {
-  private _queue: SearchResult[] = []
+  private _queue: QueuedSong[] = []
   private _currentSong: CurrentSong
   private mediaPlayerEntity: MediaPlayerEntity = {
     state: 'unknown',
@@ -30,6 +31,9 @@ export class PlayerClass extends EventEmitter {
   }
   private connection: HaConnection
   private timeout: NodeJS.Timeout
+  public isPlayingContinuously = false
+  private continuousPlaylist: QueuedSong[] = []
+  private grabbingNextUrl = false
 
   constructor () {
     super()
@@ -50,6 +54,8 @@ export class PlayerClass extends EventEmitter {
       this._currentSong.timeElapsed = Math.round(this.mediaPlayerEntity.position + (dayjs().diff(this.mediaPlayerEntity.positionUpdatedAt, 's')))
       this.emit('updated')
     }
+
+    this.addUrlToNextSong()
   }
 
   parseEntities = (entities) => {
@@ -92,16 +98,36 @@ export class PlayerClass extends EventEmitter {
   }
 
   async play() {
-    const info = await ytdl.getInfo(this.currentSong.youtubeId)
-    const highestAudio = info.formats.sort((a,b) => a.audioBitrate > b.audioBitrate ? -1 : 1)
-    this._currentSong.url = highestAudio[0].url
-    console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, this._currentSong.url)
+    if (!this._currentSong.url) {
+      this._currentSong.url = await this.getHighestAudioFromYoutubeId(this.currentSong.youtubeId)
+    }
     const url = this._currentSong.url
     await this.connection.callService('media_player', 'play_media', {
       entity_id: MEDIA_PLAYER_ENTITY_ID,
       media_content_id: url,
       media_content_type: 'music',
     })
+  }
+
+  async getHighestAudioFromYoutubeId(youtubeId: string) {
+    const info = await ytdl.getInfo(youtubeId)
+    const highestAudio = info.formats.sort((a,b) => a.audioBitrate > b.audioBitrate ? -1 : 1)
+    console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, highestAudio[0].url)
+
+    return highestAudio[0].url
+  }
+
+  async addUrlToNextSong () {
+    if (this.grabbingNextUrl) {
+      return
+    }
+    this.grabbingNextUrl = true
+    if (this.queue.length > 0 && !this.queue[0].url) {
+      this.queue[0].url = await this.getHighestAudioFromYoutubeId(this.queue[0].youtubeId)
+    } else if (this.isPlayingContinuously && this.continuousPlaylist.length > 0 && !this.continuousPlaylist[0].url) {
+      this.continuousPlaylist[0].url = await this.getHighestAudioFromYoutubeId(this.continuousPlaylist[0].youtubeId)
+    }
+    this.grabbingNextUrl = false
   }
 
   async clearMediaPlayer() {
@@ -117,12 +143,16 @@ export class PlayerClass extends EventEmitter {
     this.nextSong()
   }
 
-  nextSongIsCurrentSong() {
-    const currentSong = new CurrentSong(this.queue.shift())
+  newCurrentSong(song: SearchResult) {
+    const currentSong = new CurrentSong(song)
     currentSong.timeElapsed = 0
     currentSong.totalTime = 0
 
     return currentSong
+  }
+
+  nextSongIsCurrentSong() {
+    return this.newCurrentSong(this.queue.shift())
   }
 
   nextSong (forceNext = false) {
@@ -131,8 +161,13 @@ export class PlayerClass extends EventEmitter {
     }
 
     if ((this.currentSong && !forceNext) || this.queue.length === 0) {
-      if (this.queue.length === 0 && forceNext) {
-        this.emit('updated')
+      if (forceNext) {
+        if (this.queue.length === 0 && this.isPlayingContinuously && this.continuousPlaylist.length !== 0) {
+          this._currentSong = this.newCurrentSong(this.continuousPlaylist.shift())
+          return Player.play()
+        } else {
+          this.emit('updated')
+        }
       }
       return
     }
@@ -140,11 +175,22 @@ export class PlayerClass extends EventEmitter {
     try {
       this._currentSong = this.nextSongIsCurrentSong()
       if (this.currentSong) {
+        console.log('hello')
         Player.play()
       }
     } catch (e) {
       console.log(e)
     }
+  }
+
+  stopContinousPlay() {
+    this.isPlayingContinuously = false
+  }
+
+  startContinuousPlay(songs: SearchResult[]) {
+    this.isPlayingContinuously = true
+    this.continuousPlaylist = songs
+    console.log(songs[0])
   }
 }
 

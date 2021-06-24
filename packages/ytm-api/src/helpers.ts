@@ -20,7 +20,6 @@ export function generateAuthToken (cookies: string) {
 
     const boo = sha.digest('hex')
 
-    // return `SAPISIDHASH 1621027144_03a735d90ac49ea5eb72bb02e0807629c4d843d0`
     return `SAPISIDHASH ${dateTime}_${boo}`
   } catch (e) {
     // console.log(e)

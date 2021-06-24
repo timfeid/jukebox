@@ -1,35 +1,90 @@
 import axios, { AxiosRequestConfig } from "axios"
-import { YTM_ENDPOINT, YTM_PARAMS } from "../config"
+import { USER_AGENT, YTM_DOMAIN, YTM_ENDPOINT, YTM_PARAMS } from "../config"
 import { generateAuthToken } from "../helpers"
 
-const context = {
-  client: {
-    clientName: 'WEB_REMIX',
-    clientVersion: '0.1',
-    hl: 'en',
-    gl: 'US',
-  },
-  user: {},
+let ytcfg: Record<string, any> = {}
+
+function createApiContext() {
+  return {
+    capabilities: {},
+    client: {
+        clientName: ytcfg.INNERTUBE_CLIENT_NAME,
+        clientVersion: ytcfg.INNERTUBE_CLIENT_VERSION,
+        experimentIds: [],
+        experimentsToken: "",
+        gl: ytcfg.GL,
+        hl: ytcfg.HL,
+        locationInfo: {
+            locationPermissionAuthorizationStatus: "LOCATION_PERMISSION_AUTHORIZATION_STATUS_UNSUPPORTED",
+        },
+        musicAppInfo: {
+            musicActivityMasterSwitch: "MUSIC_ACTIVITY_MASTER_SWITCH_INDETERMINATE",
+            musicLocationMasterSwitch: "MUSIC_LOCATION_MASTER_SWITCH_INDETERMINATE",
+            pwaInstallabilityStatus: "PWA_INSTALLABILITY_STATUS_UNKNOWN",
+        },
+        utcOffsetMinutes: -new Date().getTimezoneOffset(),
+    },
+    request: { internalExperimentFlags: [], sessionIndex: '0' },
+    user: {
+        enableSafetyMode: false,
+    },
+  }
+
 }
 
-const headers: Record<string, string> = {
-  'content-type': 'application/json',
-  'origin': 'https://music.youtube.com',
+const defaultHeaders: Record<string, string> = {
+  'Content-Type': 'application/json',
+  'origin': YTM_DOMAIN,
+  'user-agent': USER_AGENT,
+  'cookie': process.env.COOKIE,
 }
 
-export function createRequest(url: string, data: Record<string, any>, config?: AxiosRequestConfig) {
+async function initalize() {
   const authHeader = generateAuthToken(process.env.COOKIE)
+
+  const headers = Object.assign({}, defaultHeaders)
+
   if (authHeader) {
-    headers.cookie = process.env.COOKIE,
     headers.authorization = authHeader
   }
 
-  return axios.post(`${YTM_ENDPOINT}${url}`, {
-    ...data,
-    context,
-    params: 'EgWKAQIIAWoKEAMQBBAJEAoQBQ%3D%3D',
-  }, {
-    params: YTM_PARAMS,
+  const res = await axios.get(YTM_DOMAIN, {
     headers,
   })
+
+  res.data.split('ytcfg.set(').map(v => {
+    try {
+        return JSON.parse(v.split(');')[0])
+    } catch (_) {}
+  }).filter(Boolean).forEach(cfg => (ytcfg = Object.assign(cfg, ytcfg)))
+}
+
+export async function createRequest(url: string, data: Record<string, any>, config?: AxiosRequestConfig) {
+  const authHeader = generateAuthToken(process.env.COOKIE)
+  let headers = Object.assign({}, defaultHeaders)
+  if (authHeader) {
+    if (!ytcfg.VISITOR_DATA) {
+      await initalize()
+    }
+    headers = Object.assign({
+      'authorization': authHeader,
+      'x-origin': YTM_DOMAIN,
+      'X-Goog-Visitor-Id': ytcfg.VISITOR_DATA || '',
+    }, defaultHeaders)
+  }
+
+  const context = createApiContext()
+
+  try {
+
+    return await axios.post(`${YTM_ENDPOINT}${url}`, {
+      ...data,
+      context,
+    }, {
+      params: YTM_PARAMS,
+      headers,
+    })
+  } catch (e) {
+    console.log(e.response.data)
+  }
 }

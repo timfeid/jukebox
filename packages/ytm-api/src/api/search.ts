@@ -15,6 +15,7 @@ export async function search(query: string) {
       const response2 = await createRequest('search', {
         query,
         ctoken,
+        params: 'EgWKAQIIAWoKEAMQBBAJEAoQBQ%3D%3D',
       })
       results = [...results, ...parseSearch(response2.data)]
       continuations = response2.data.contents.sectionListRenderer.contents[0].musicShelfRenderer.continuations

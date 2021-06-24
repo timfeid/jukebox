@@ -10,7 +10,6 @@ describe("suggestion parsing", () => {
     expect(parsed[0].runs[1]).to.have.property('text').eq(' meduza')
     expect(parsed[0].query).to.eq('piece of your heart meduza')
 
-    console.log(parsed[0].runs)
   })
 
   // it('parses another version', () => {
