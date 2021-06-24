@@ -25,7 +25,7 @@ const HomeComponent = () => {
           </div>
         </Tile>
         <Tile title="Livingston"><WeatherComponent /></Tile>
-        {homeContext.state.sun.isDaytime ? <Tile title="UV Index">
+        {homeContext.state.sun?.isDaytime ? <Tile title="UV Index">
           <UVIndex />
         </Tile> : null}
         <Tile title="Sun">
