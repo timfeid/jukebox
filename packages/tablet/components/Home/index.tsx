@@ -5,6 +5,7 @@ import FlipClock from '../FlipClock';
 import WeatherComponent from '../Weather';
 import Queue from './Queue';
 import WasherDryer from './WasherDryer';
+import People from './People';
 import UVIndex from './UVIndex';
 import Sun from './Sun';
 import Tile from './Tile'
@@ -24,9 +25,9 @@ const HomeComponent = () => {
           </div>
         </Tile>
         <Tile title="Livingston"><WeatherComponent /></Tile>
-        <Tile title="UV Index">
+        {homeContext.state.sun.isDaytime ? <Tile title="UV Index">
           <UVIndex />
-        </Tile>
+        </Tile> : null}
         <Tile title="Sun">
 
           <Sun />
@@ -37,6 +38,9 @@ const HomeComponent = () => {
         {homeContext.state.dryer && homeContext.state.dryer.state === 'on' ? <Tile title="Dryer">
           <WasherDryer type="dryer" />
         </Tile> : null}
+        <Tile title="People">
+          <People />
+        </Tile>
       </div>
 
       <Queue />

@@ -74,6 +74,12 @@ export type Sun = {
   isDaytime: boolean
 }
 
+export type Tracker = {
+  person: string
+  deviceName: string
+  state: string
+}
+
 export type HomeState = {
   loading: boolean,
   thermostats: Thermostat[]
@@ -83,6 +89,7 @@ export type HomeState = {
   dryer: WasherDryer
   washer: WasherDryer
   forecast: ForecastedWeather[]
+  trackers: Tracker[]
 }
 
 const initialState: HomeState = {
@@ -94,6 +101,7 @@ const initialState: HomeState = {
   washer: null,
   dryer: null,
   forecast: [],
+  trackers: [],
 }
 
 export const HomeContext = createContext<HomeStore>({ state: initialState })
@@ -265,6 +273,43 @@ function findForecast(entities) {
   return forecast
 }
 
+function findTrackers(entities) {
+  const trackers: Tracker[] = []
+  const knownPeople = {
+    'DEEZ-NUTZ': 'Tim Feid',
+    'PIXEL-3A': 'Nicolle Guida',
+    'JOHNFEIDSIPHONE': 'John Feid',
+    'STEPHENS-IPHONE': 'Stephen Chan',
+    'DOMINICS-IPHONE': 'Dominic DePasquale',
+    'SAMSUNG-SM-G935V': 'Salvator Cocuzza',
+  }
+
+  const homeStates: any = {}
+
+  const validKeys = Object.keys(entities).filter(key => key.startsWith('device_tracker.'))
+
+  for (const key of validKeys) {
+    const deviceName = entities[key].attributes.friendly_name
+    if (!homeStates[deviceName] && entities[key].state === 'home') {
+      homeStates[deviceName] = 1
+    }
+  }
+
+  for (const key of validKeys) {
+    const deviceName = entities[key].attributes.friendly_name
+    if (!trackers.find(t => t.deviceName === deviceName)) {
+
+      trackers.push({
+        person: knownPeople[deviceName] || 'unknown',
+        state: homeStates[deviceName] ? 'home' : entities[key].state,
+        deviceName,
+      })
+    }
+  }
+
+  return trackers
+}
+
 function convert(entities): HomeState {
   console.log(entities)
   return {
@@ -276,6 +321,7 @@ function convert(entities): HomeState {
     washer: findWasherDryer(entities, 'washer'),
     dryer: findWasherDryer(entities, 'dryer'),
     forecast: findForecast(entities),
+    trackers: findTrackers(entities),
   }
 }
 

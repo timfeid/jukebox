@@ -18,7 +18,10 @@ export default class Sun extends React.Component<MyProps> {
       const sunrise = this.context.state.sun.nextSunrise.subtract(1, 'd')
       const sunset = this.context.state.sun.nextSunset
       const percentage = 100 - (sunset.diff(dayjs()) / sunset.diff(sunrise) * 100)
-      const color = chroma.scale('RdPu')
+      const sunriseScale = ['#00429d', '#2e59a8', '#4771b2', '#5d8abd', '#73a2c6', '#8abccf', '#a5d5d8', '#c5eddf', '#ffffe0']
+      const sunsetScale = ['#faeda9', '#e3d5a9', '#cbbea9', '#b3a8a8', '#9a92a7', '#817ca5', '#6568a3', '#4454a0', '#00429d']
+      const color = chroma.scale(this.context.state.sun.isDaytime ? sunsetScale : sunriseScale)
+
       sun = (
         <div style={{width: '175px'}} className={this.props.className}>
           <CircularProgressbarWithChildren value={percentage} strokeWidth={2} styles={buildStyles({
@@ -28,7 +31,7 @@ export default class Sun extends React.Component<MyProps> {
               {this.context.state.sun.isDaytime ? 'Sunset' : 'Sunrise'}
             </div>
             <div className="text-2xl">
-              {sunset.format('hh:mmA')}
+              {this.context.state.sun.isDaytime ? sunset.format('hh:mmA') : sunrise.format('hh:mmA')}
             </div>
 
           </CircularProgressbarWithChildren>
