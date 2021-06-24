@@ -10,19 +10,8 @@ function createApiContext() {
     client: {
         clientName: ytcfg.INNERTUBE_CLIENT_NAME,
         clientVersion: ytcfg.INNERTUBE_CLIENT_VERSION,
-        experimentIds: [],
-        experimentsToken: "",
         gl: ytcfg.GL,
         hl: ytcfg.HL,
-        locationInfo: {
-            locationPermissionAuthorizationStatus: "LOCATION_PERMISSION_AUTHORIZATION_STATUS_UNSUPPORTED",
-        },
-        musicAppInfo: {
-            musicActivityMasterSwitch: "MUSIC_ACTIVITY_MASTER_SWITCH_INDETERMINATE",
-            musicLocationMasterSwitch: "MUSIC_LOCATION_MASTER_SWITCH_INDETERMINATE",
-            pwaInstallabilityStatus: "PWA_INSTALLABILITY_STATUS_UNKNOWN",
-        },
-        utcOffsetMinutes: -new Date().getTimezoneOffset(),
     },
     request: { internalExperimentFlags: [], sessionIndex: '0' },
     user: {
@@ -59,18 +48,20 @@ async function initalize() {
   }).filter(Boolean).forEach(cfg => (ytcfg = Object.assign(cfg, ytcfg)))
 }
 
-export async function createRequest(url: string, data: Record<string, any>, config?: AxiosRequestConfig) {
-  const authHeader = generateAuthToken(process.env.COOKIE)
+export async function createRequest(url: string, data: Record<string, any>, asAnonymous = false) {
   let headers = Object.assign({}, defaultHeaders)
-  if (authHeader) {
-    if (!ytcfg.VISITOR_DATA) {
-      await initalize()
+  if (!ytcfg.VISITOR_DATA) {
+    await initalize()
+  }
+  if (!asAnonymous) {
+    const authHeader = generateAuthToken(process.env.COOKIE)
+    if (authHeader) {
+      headers = Object.assign({
+        'authorization': authHeader,
+        'x-origin': YTM_DOMAIN,
+        'X-Goog-Visitor-Id': ytcfg.VISITOR_DATA || '',
+      }, defaultHeaders)
     }
-    headers = Object.assign({
-      'authorization': authHeader,
-      'x-origin': YTM_DOMAIN,
-      'X-Goog-Visitor-Id': ytcfg.VISITOR_DATA || '',
-    }, defaultHeaders)
   }
 
   const context = createApiContext()

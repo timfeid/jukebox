@@ -9,7 +9,7 @@ export async function suggestion(input: string) {
       return []
     }
 
-    const response = await createRequest('music/get_search_suggestions', {input})
+    const response = await createRequest('music/get_search_suggestions', {input}, true)
 
     return parseSuggestions(response.data)
   } catch (e) {

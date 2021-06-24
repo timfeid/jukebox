@@ -72,7 +72,7 @@ async function refresh () {
 }
 
 refresh()
-getAllDevices()
+// getAllDevices()
 
 app.use(async (ctx, next) => {
   let ip = '10.30.0.16'

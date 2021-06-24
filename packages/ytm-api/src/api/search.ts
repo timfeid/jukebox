@@ -6,7 +6,7 @@ export async function search(query: string) {
   const limit = 40
   let results: SearchResult[] = []
   try {
-    const response = await createRequest('search', {query})
+    const response = await createRequest('search', {query}, true)
     results = [...results, ...parseSearch(response.data)]
     let continuations = response.data.contents.sectionListRenderer.contents[0].musicShelfRenderer.continuations
 
