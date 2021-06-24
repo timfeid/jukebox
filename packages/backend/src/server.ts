@@ -1,11 +1,10 @@
 import 'reflect-metadata'
 import dotenv from 'dotenv'
+dotenv.config()
+
 import { app } from './app'
 import { ApolloServer } from 'apollo-server-koa'
 
-dotenv.config()
-
-console.log('hello world')
 
 app.on('ready', (apolloServer: ApolloServer) => {
   const server = app.listen(3000)

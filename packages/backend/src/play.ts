@@ -1,112 +1,113 @@
 import { SearchResult } from '@gym/ytm-api'
-import debounce from 'debounce'
 import EventEmitter from 'events'
-import ffmpeg from 'fluent-ffmpeg'
-import Speaker from 'speaker'
-import { Readable } from 'stream'
 import ytdl from 'ytdl-core'
 import { prisma } from './prisma-client'
 import { CurrentSong } from './schema/current-song'
+import dayjs from 'dayjs'
+import {
+  subscribeEntities,
+} from "home-assistant-js-websocket";
+import { HaConnection } from './homeassistant/connection'
 
+const MEDIA_PLAYER_ENTITY_ID = process.env.MEDIA_PLAYER_ENTITY_ID
+
+type MediaPlayerEntity = {
+  state: 'idle' | 'playing' | 'unknown'
+  position: number
+  positionUpdatedAt: dayjs.Dayjs
+  duration: number
+  url: string
+}
 export class PlayerClass extends EventEmitter {
   private _queue: SearchResult[] = []
   private _currentSong: CurrentSong
+  private mediaPlayerEntity: MediaPlayerEntity = {
+    state: 'unknown',
+    position: 0,
+    positionUpdatedAt: dayjs(),
+    duration: 0,
+    url: '',
+  }
+  private connection: HaConnection
+  private timeout: NodeJS.Timeout
+
+  constructor () {
+    super()
+
+    this.connection = new HaConnection()
+    this.connection.tryConnect().then(async () => {
+      subscribeEntities(this.connection.connection, this.parseEntities)
+      this.clearMediaPlayer()
+      this.updateTimeLeft()
+    })
+  }
+
+  updateTimeLeft = () => {
+    this.timeout = setTimeout(this.updateTimeLeft, 1000)
+
+    if (this.mediaPlayerEntity.state === 'playing' && this._currentSong && this._currentSong.url === this.mediaPlayerEntity.url) {
+      this._currentSong.totalTime = this.mediaPlayerEntity.duration
+      this._currentSong.timeElapsed = Math.round(this.mediaPlayerEntity.position + (dayjs().diff(this.mediaPlayerEntity.positionUpdatedAt, 's')))
+      this.emit('updated')
+    }
+  }
+
+  parseEntities = (entities) => {
+    const mpEentity = entities[MEDIA_PLAYER_ENTITY_ID]
+    const state = mpEentity.state
+    const position = mpEentity.attributes.media_position
+    const positionUpdated = mpEentity.attributes.media_position_updated_at
+    const url = mpEentity.attributes.media_content_id
+
+    if (this._currentSong && this._currentSong.url === url) {
+      if (state !== this.mediaPlayerEntity.state) {
+        if (state === 'idle' && this.currentSong.receivedByPlayer) {
+          console.log('Player is idle and we have received the song already, next song pls')
+          this.nextSong(true)
+        }
+
+        if (state === 'playing' && !this._currentSong.receivedByPlayer) {
+          console.log("We are playing the correct song! Mark it played & received.")
+          this._currentSong.receivedByPlayer = true
+          this.emit('playing')
+        }
+      }
+    }
+
+    this.mediaPlayerEntity = {
+      state,
+      position,
+      positionUpdatedAt: dayjs(positionUpdated),
+      duration: Math.round(mpEentity.attributes.media_duration),
+      url,
+    }
+  }
 
   get currentSong () {
     return this._currentSong
-  }
-
-  set currentSong (song: CurrentSong) {
-    this._currentSong = song
   }
 
   get queue () {
     return this._queue
   }
 
-  setSongDetails (details: ytdl.videoInfo) {
-    this._currentSong.totalTime = parseInt(details.player_response.videoDetails.lengthSeconds, 10)
-    this.emit('started')
-    this.emit('updated')
-  }
-
-  getTimeElapsed(timemark: string) {
-    const [hours, minutes, secondsAndMs] = timemark.split(':')
-    const [seconds] = secondsAndMs.split('.')
-
-    return parseInt(hours, 10) * 3600
-      + parseInt(minutes, 10) * 60
-      + parseInt(seconds, 10)
-  }
-
-  updateProcess ({timemark}: {timemark: string}) {
-    const timeElapsed = this.getTimeElapsed(timemark)
-
-    if (this._currentSong && this._currentSong.timeElapsed != timeElapsed) {
-      this._currentSong.timeElapsed = timeElapsed
-      this.emit('updated')
-    }
-  }
-
-  playDl(dl: Readable) {
-
-    const stream = ffmpeg(dl)
-      .outputOptions([
-        '-f s16le',
-        '-acodec pcm_s16le',
-        '-vn',
-        '-ac 2',
-        '-ar 44100'
-      ])
-
-    stream.seekInput(this.currentSong.timeElapsed)
-    stream.on('progress', this.updateProcess.bind(this))
-
-    stream.on('error', (e) => {
-      console.log('stream err')
-      console.log(e)
+  async play() {
+    const info = await ytdl.getInfo(this.currentSong.youtubeId)
+    const highestAudio = info.formats.sort((a,b) => a.audioBitrate > b.audioBitrate ? -1 : 1)
+    this._currentSong.url = highestAudio[0].url
+    console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, this._currentSong.url)
+    const url = this._currentSong.url
+    await this.connection.callService('media_player', 'play_media', {
+      entity_id: MEDIA_PLAYER_ENTITY_ID,
+      media_content_id: url,
+      media_content_type: 'music',
     })
-
-
-    this.speaker(stream)
   }
 
-  speaker(stream: ffmpeg.FfmpegCommand) {
-    let er = false
-    console.log('creating a speaker.')
-    const speaker = new Speaker()
-      .on('error', (e) => {
-        er = true
-        console.log('speaker error, lets restart the speaker.', e)
-        // // @ts-ignore
-        // stream.unpipe(speaker)
-        // this.play()
-      })
-      .on('close', () => {
-        console.log('speaker closed.')
-        if (!er) {
-          this.songEnded()
-        } else {
-          console.log('there was an error')
-          this.play()
-        }
-      })
-
-    stream.pipe(speaker)
-  }
-
-  play() {
-    const dl = ytdl(this.currentSong.youtubeId, {
-      quality: 'highestaudio',
-      filter: 'audioonly',
+  async clearMediaPlayer() {
+    await this.connection.callService('media_player', 'media_stop', {
+      entity_id: MEDIA_PLAYER_ENTITY_ID,
     })
-    dl.on('error', () => {
-      console.log('download error.')
-      this.play()
-    })
-    dl.on('info', this.setSongDetails.bind(this))
-
-    this.playDl(dl)
   }
 
   add(song: SearchResult) {
@@ -115,10 +116,6 @@ export class PlayerClass extends EventEmitter {
 
     this.nextSong()
   }
-
-  songEnded = debounce(function () {
-    this.nextSong(true)
-  }, 3000)
 
   nextSongIsCurrentSong() {
     const currentSong = new CurrentSong(this.queue.shift())
@@ -130,7 +127,7 @@ export class PlayerClass extends EventEmitter {
 
   nextSong (forceNext = false) {
     if (forceNext && this.queue.length === 0) {
-      this.currentSong = null
+      this._currentSong = null
     }
 
     if ((this.currentSong && !forceNext) || this.queue.length === 0) {
@@ -141,7 +138,7 @@ export class PlayerClass extends EventEmitter {
     }
 
     try {
-      this.currentSong = this.nextSongIsCurrentSong()
+      this._currentSong = this.nextSongIsCurrentSong()
       if (this.currentSong) {
         Player.play()
       }
@@ -150,6 +147,7 @@ export class PlayerClass extends EventEmitter {
     }
   }
 }
+
 
 export const Player = new PlayerClass()
 

@@ -13,4 +13,10 @@ export class CurrentSong extends SearchResult {
 
   @Field()
   totalTime: number
+
+  @Field()
+  url: string
+
+  @Field()
+  receivedByPlayer: boolean
 }

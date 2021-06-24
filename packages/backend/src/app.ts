@@ -2,11 +2,36 @@
 import Koa from 'koa'
 import koaBody from 'koa-bodyparser'
 import { createApolloServer } from './apollo-server'
+import request from 'request'
+import ffmpeg from 'fluent-ffmpeg'
+import { WriteStream } from 'fs'
+import { createWriteStream } from 'fs'
+import stream from 'stream'
+import { Player } from './play'
 
 const app = new Koa()
 const devices = []
 
 app.use(koaBody())
+// a terrible idea
+// app.use(async (ctx, next) => {
+//   if (ctx.request.path === '/test' && Player.currentSong) {
+//     const path = Player.currentSong.url
+//     console.log('playing mp3 from', path)
+//     const converter = ffmpeg(request(path))
+//       .toFormat('mp3')
+//       .withAudioCodec('libmp3lame')
+//       .toFormat('mp3')
+
+//     ctx.response.attachment('audio.mp3')
+//     ctx.response.type = 'mp3'
+//     ctx.body =  converter.pipe(stream.PassThrough(), {end: true});
+
+//   } else {
+//     return next()
+//   }
+
+// })
 app.use(async (context, next) => {
   let matched
   if (!devices.length) {
