@@ -7,7 +7,7 @@ export default function TopSongs ({topSongs}) {
   const player = usePlayerContext()
   const { data, error } = fetch(`
     query {
-      mostPopularSongs(take: 12) {
+      mostPopularSongs(take: 9) {
         title
         artist
         album
@@ -22,7 +22,7 @@ export default function TopSongs ({topSongs}) {
   }
 
   return (
-    <div style={{gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', maxHeight: player.state.currentSong ? '16rem' : '22rem'}} className="grid justify-between w-full">
+    <div style={{gridTemplateColumns: 'repeat(3, minmax(0, 1fr))'}} className="grid justify-between w-full">
       {data.mostPopularSongs.map((song, index) => (
         <div key={index} className="flex items-center" style={{width: 'auto'}}>
           <div className="text-5xl mr-8 pb-4 text-pink-300 text-center" style={{opacity: .2, fontFamily: 'Squada One', width: '3rem', minWidth: '3rem'}}>

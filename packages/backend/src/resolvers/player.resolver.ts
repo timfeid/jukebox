@@ -21,7 +21,7 @@ export class PlayerResolver {
 
   @Mutation(returns => PlayerResult)
   async continuousPlay(
-    @Arg('continousPlay', type => Boolean) continuousPlay: boolean,
+    @Arg('continuousPlay', type => Boolean) continuousPlay: boolean,
     @Arg('playlistId', type => String, { nullable: true }) browseId: string,
   ) {
     if (continuousPlay && !browseId) {
@@ -33,6 +33,14 @@ export class PlayerResolver {
     } else {
       Player.stopContinousPlay()
     }
+
+    return Player
+  }
+
+  @Mutation(returns => PlayerResult)
+  async reset() {
+    await Player.clearMediaPlayer()
+    Player.nextSong(true)
 
     return Player
   }

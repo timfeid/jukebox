@@ -17,6 +17,7 @@ export type PlayerStore = {
 export type PlayerState = {
   currentSong: CurrentSongWithProgress | null,
   queue: SearchResult[]
+  isPlayingContinuously: boolean
 }
 
 export enum PlayerActions {
@@ -45,6 +46,7 @@ export type PlayerAction = PlayerActionQueue | PlayerActionCurrentSong | PlayerA
 const initialState: PlayerState = {
   currentSong: null,
   queue: [],
+  isPlayingContinuously: false,
 }
 
 export const PlayerContext = createContext<PlayerStore>({ state: initialState })
@@ -109,6 +111,7 @@ export const getCurrentSong = (dispatch: (value: PlayerAction) => void) => {
         albumArt
         artist
       }
+      isPlayingContinuously
     }
   }`).then(({player}) => {
     dispatch({
@@ -141,6 +144,7 @@ export const subscribe = () => {
               albumArt
               artist
             }
+            isPlayingContinuously
           }
         }
       `
