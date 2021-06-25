@@ -99,7 +99,10 @@ export class PlayerClass extends EventEmitter {
 
   async play() {
     if (!this._currentSong.url) {
-      this._currentSong.url = await this.getHighestAudioFromYoutubeId(this.currentSong.youtubeId)
+      let url = await this.getHighestAudioFromYoutubeId(this.currentSong.youtubeId)
+      if (url !== false) {
+        this._currentSong.url = url
+      }
     }
     if (!this._currentSong.url) {
       console.log('something went wrong grabbing the url!')
@@ -123,7 +126,9 @@ export class PlayerClass extends EventEmitter {
       return highestAudio[0].url
     } catch (e) {
       console.log(':(')
+
     }
+    return false
   }
 
   async addUrlToNextSong () {
@@ -132,9 +137,11 @@ export class PlayerClass extends EventEmitter {
     }
     this.grabbingNextUrl = true
     if (this.queue.length > 0 && !this.queue[0].url) {
-      this.queue[0].url = await this.getHighestAudioFromYoutubeId(this.queue[0].youtubeId)
+      const url = await this.getHighestAudioFromYoutubeId(this.queue[0].youtubeId)
+      this.queue[0].url = url || ''
     } else if (this.isPlayingContinuously && this.continuousPlaylist.length > 0 && !this.continuousPlaylist[0].url) {
-      this.continuousPlaylist[0].url = await this.getHighestAudioFromYoutubeId(this.continuousPlaylist[0].youtubeId)
+      const url = await this.getHighestAudioFromYoutubeId(this.continuousPlaylist[0].youtubeId)
+      this.continuousPlaylist[0].url = url || ''
     }
     this.grabbingNextUrl = false
   }
