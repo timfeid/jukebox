@@ -101,6 +101,10 @@ export class PlayerClass extends EventEmitter {
     if (!this._currentSong.url) {
       this._currentSong.url = await this.getHighestAudioFromYoutubeId(this.currentSong.youtubeId)
     }
+    if (!this._currentSong.url) {
+      console.log('something went wrong grabbing the url!')
+      return this.nextSong(true)
+    }
     const url = this._currentSong.url
     await this.connection.callService('media_player', 'play_media', {
       entity_id: MEDIA_PLAYER_ENTITY_ID,
@@ -110,11 +114,16 @@ export class PlayerClass extends EventEmitter {
   }
 
   async getHighestAudioFromYoutubeId(youtubeId: string) {
-    const info = await ytdl.getInfo(youtubeId)
-    const highestAudio = info.formats.sort((a,b) => a.audioBitrate > b.audioBitrate ? -1 : 1)
-    console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, highestAudio[0].url)
+    try {
 
-    return highestAudio[0].url
+      const info = await ytdl.getInfo(youtubeId)
+      const highestAudio = info.formats.sort((a,b) => a.audioBitrate > b.audioBitrate ? -1 : 1)
+      console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, highestAudio[0].url)
+
+      return highestAudio[0].url
+    } catch (e) {
+      console.log(':(')
+    }
   }
 
   async addUrlToNextSong () {
@@ -131,7 +140,7 @@ export class PlayerClass extends EventEmitter {
   }
 
   async clearMediaPlayer() {
-    await this.connection.callService('media_player', 'media_stop', {
+    return await this.connection.callService('media_player', 'media_stop', {
       entity_id: MEDIA_PLAYER_ENTITY_ID,
     })
   }
