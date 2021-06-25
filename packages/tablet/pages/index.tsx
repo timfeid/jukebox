@@ -63,17 +63,17 @@ export default function index() {
     ))
   }
 
-  const classes = player.state.currentSong === null ? layout.container : `${layout.container} ${layout.containerWithPlaying}`
+  // const classes = player.state.currentSong === null ? layout.container : `${layout.container} ${layout.containerWithPlaying}`
 
   return (
-    <div className={`flex ${player.state.currentSong ? 'playing' : null}`}>
+    <div className={`flex ${player.state.currentSong ? 'playing-old' : null}`}>
       <div className={layout.nav}>
         <div>
           <FaHome size="24" style={styleForNavIndex(0)} />
           <FaMusic size="24" style={styleForNavIndex(1)} />
         </div>
       </div>
-      <div className={classes}>
+      <div className={layout.container}>
 
         <SwipableViews
           axis="y"
