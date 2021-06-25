@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import PropTypes from 'prop-types';
 
 const useStyles = createUseStyles({
   svg: {
@@ -9,7 +9,7 @@ const useStyles = createUseStyles({
 });
 
 const WeatherIcon = ({ title, path, size, viewBox }) => {
-  const classes = useStyles()
+
   return (
     <svg
       version="1.1"
@@ -17,7 +17,6 @@ const WeatherIcon = ({ title, path, size, viewBox }) => {
       width={size}
       height={size}
       viewBox={viewBox}
-      className={classes.svg}
     >
       <title>{title}</title>
       <path d={path} />

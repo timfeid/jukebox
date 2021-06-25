@@ -1,15 +1,15 @@
 import dayjs from 'dayjs';
 import React from 'react';
-import { HomeContext, HomeStore, useHomeContext } from '../../context/home';
-import FlipClock from '../FlipClock';
+import { useHomeContext } from '../../context/home';
+import { usePlayerContext } from '../../context/player.context';
 import WeatherComponent from '../Weather';
-import Queue from './Queue';
-import WasherDryer from './WasherDryer';
+import NowPlaying from './NowPlaying';
 import People from './People';
-import UVIndex from './UVIndex';
+import Queue from './Queue';
 import Sun from './Sun';
-import Tile from './Tile'
-import { PlayerContext, PlayerStore, usePlayerContext } from '../../context/player.context';
+import Tile from './Tile';
+import UVIndex from './UVIndex';
+import WasherDryer from './WasherDryer';
 
 const HomeComponent = () => {
   const homeContext = useHomeContext()
@@ -18,6 +18,9 @@ const HomeComponent = () => {
   return (
     <div className="flex w-full h-full items-center">
       <div className={`flex-grow grid grid-cols-${playerContext.state.queue.length ? 3 : 4} auto-rows-fr`}>
+        {playerContext.state.currentSong && <Tile title="Now Playing">
+          <NowPlaying />
+        </Tile>}
         <Tile title="Time">
           <div className="text-5xl text-center leading-tight">
             {dayjs().format('MMM D')}<br />

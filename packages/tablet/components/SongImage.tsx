@@ -1,7 +1,7 @@
 import Styles from '../styles/SongImage.module.scss'
 
-export default function SongCard ({title, artist, albumArt, album, className = undefined}) {
-  albumArt = albumArt.replace(/w120-h120/, 'w400-h400')
+export default function SongImage ({title, artist, albumArt, album, className = undefined}) {
+  albumArt = albumArt ? albumArt.replace(/w120-h120/, 'w400-h400') : ''
   return (
     <div className={`flex ${Styles.card} ${className}`}>
       <div className={Styles.imageContainer}>

@@ -2,17 +2,17 @@ import { useState } from "react";
 import { FaHome, FaMusic } from 'react-icons/fa';
 import SwipableViews from 'react-swipeable-views';
 import Home from "../components/Home";
-import NowPlaying from "../components/NowPlaying";
 import Player from '../components/Player';
 import Thermostat from '../components/Thermostat';
 import { useHomeContext } from '../context/home';
-import { usePlayerContext } from "../context/player.context";
+import { subscribe, usePlayerContext } from "../context/player.context";
 import layout from '../styles/Layout.module.scss';
 
 export default function index() {
 
   const home = useHomeContext()
   const player = usePlayerContext()
+  subscribe()
 
   const [index, setIndex] = useState(0)
 
@@ -86,7 +86,6 @@ export default function index() {
           <Player />
         </SwipableViews>
       </div>
-      <NowPlaying />
     </div>
   );
 }

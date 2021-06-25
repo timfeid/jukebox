@@ -5,13 +5,17 @@ import { SearchResult } from '../../backend/src/schema/search'
 import apolloClient from '../apollo-client'
 import { request } from '../fetcher/graphql'
 
+type CurrentSongWithProgress = CurrentSong & {
+  progress: number
+}
+
 export type PlayerStore = {
   state: PlayerState
   dispatch?: Dispatch<PlayerAction>
 }
 
 export type PlayerState = {
-  currentSong: CurrentSong | null,
+  currentSong: CurrentSongWithProgress | null,
   queue: SearchResult[]
 }
 
@@ -45,17 +49,29 @@ const initialState: PlayerState = {
 
 export const PlayerContext = createContext<PlayerStore>({ state: initialState })
 
+function calculateProgress(song: CurrentSong) {
+  return (song.totalTime === 0
+    ? 0
+    : (song.timeElapsed / song.totalTime * 100))
+}
+
 export const reducer = (
   state: PlayerState = initialState,
   action: PlayerAction
 ): PlayerState => {
   switch (action.type) {
     case PlayerActions.POPULATE:
-      return action.payload
+      const state = action.payload
+      state.currentSong.progress = calculateProgress(state.currentSong)
+
+      return state
     case PlayerActions.SET_CURRENT_SONG:
       return {
         ...state,
-        currentSong: action.song,
+        currentSong: {
+          ...action.song,
+          progress: calculateProgress(action.song),
+        }
       }
     case PlayerActions.SET_QUEUE:
       return {

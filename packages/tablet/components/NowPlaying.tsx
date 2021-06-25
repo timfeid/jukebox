@@ -1,10 +1,8 @@
-import { fetch, request } from '../fetcher/graphql'
-import React, { useEffect } from 'react'
-import SongImage from './SongImage'
-import { PlayerActions, subscribe, usePlayerContext } from '../context/player.context'
-import { useSubscription } from '@apollo/client'
+import React from 'react'
+import { subscribe, usePlayerContext } from '../context/player.context'
 // import { usePlayerStateContext } from '../context/player-context'
 import Styles from '../styles/NowPlaying.module.scss'
+import SongImage from './SongImage'
 
 const NowPlaying = () => {
   const { state } = usePlayerContext()
@@ -15,13 +13,11 @@ const NowPlaying = () => {
     return null
   }
 
-  const width = (state.currentSong.totalTime === 0
-    ? 0
-    : (state.currentSong.timeElapsed / state.currentSong.totalTime * 100)).toFixed(2)
+  return null
 
   return <div className={Styles.nowPlaying}>
     <div className={Styles.progressContainer}>
-      <div className={Styles.progressBar} style={{width: `${width}%`}}></div>
+      <div className={Styles.progressBar} style={{width: `${state.currentSong.progress}%`}}></div>
     </div>
     <div className={Styles.nowPlayingContainer}>
       <SongImage {...state.currentSong} className={Styles.nowPlayingCard} />
