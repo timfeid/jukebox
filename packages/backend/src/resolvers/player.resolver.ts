@@ -40,7 +40,6 @@ export class PlayerResolver {
   @Mutation(returns => PlayerResult)
   async reset() {
     await Player.clearMediaPlayer()
-    Player.nextSong(true)
 
     return Player
   }
