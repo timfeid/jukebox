@@ -64,7 +64,9 @@ export const reducer = (
   switch (action.type) {
     case PlayerActions.POPULATE:
       const state = action.payload
-      state.currentSong.progress = calculateProgress(state.currentSong)
+      if (state.currentSong) {
+        state.currentSong.progress = calculateProgress(state.currentSong)
+      }
 
       return state
     case PlayerActions.SET_CURRENT_SONG:
