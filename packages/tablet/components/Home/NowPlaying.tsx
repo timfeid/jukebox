@@ -14,10 +14,10 @@ export default class NowPlaying extends React.Component {
       <div className="w-full h-full flex flex-col items-center pt-4">
         <div className="flex-grow flex items-center flex-col">
           <img className="object-contain" src={albumArt} />
-          <div className="text-xl font-bold pt-3 whitespace-nowrap overflow-hidden overflow-ellipsis" style={{maxWidth: '60%'}}>
+          <div className="text-xl font-bold pt-3 whitespace-nowrap overflow-hidden overflow-ellipsis" style={{maxWidth: '80%'}}>
             {this.context.state.currentSong.title}
           </div>
-          <div className="text-xl font-light whitespace-nowrap overflow-hidden overflow-ellipsis" style={{maxWidth: '60%'}}>
+          <div className="text-xl font-light whitespace-nowrap overflow-hidden overflow-ellipsis" style={{maxWidth: '80%'}}>
             {this.context.state.currentSong.artist}
           </div>
         </div>
