@@ -136,10 +136,12 @@ export class PlayerClass extends EventEmitter {
       return
     }
     this.grabbingNextUrl = true
-    if (this.queue.length > 0 && !this.queue[0].url) {
+    if (this.queue.length > 0 && this.queue[0].url === undefined) {
+      console.log('grabbing next song')
       const url = await this.getHighestAudioFromYoutubeId(this.queue[0].youtubeId)
       this.queue[0].url = url || ''
-    } else if (this.isPlayingContinuously && this.continuousPlaylist.length > 0 && !this.continuousPlaylist[0].url) {
+    } else if (this.isPlayingContinuously && this.continuousPlaylist.length > 0 && this.continuousPlaylist[0].url === undefined) {
+      console.log('grabbing next continuous song')
       const url = await this.getHighestAudioFromYoutubeId(this.continuousPlaylist[0].youtubeId)
       this.continuousPlaylist[0].url = url || ''
     }
