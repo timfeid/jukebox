@@ -52,7 +52,7 @@ export class PlayerClass extends EventEmitter {
     if (this.mediaPlayerEntity.state === 'playing' && this._currentSong && this._currentSong.url === this.mediaPlayerEntity.url) {
       this._currentSong.totalTime = this.mediaPlayerEntity.duration
       this._currentSong.timeElapsed = Math.round(this.mediaPlayerEntity.position + (dayjs().diff(this.mediaPlayerEntity.positionUpdatedAt, 's')))
-      this.emit('updated')
+      this.updated()
     }
 
     this.addUrlToNextSong()
@@ -166,7 +166,7 @@ export class PlayerClass extends EventEmitter {
           this._currentSong = this.newCurrentSong(this.continuousPlaylist.shift())
           return Player.play()
         } else {
-          this.emit('updated')
+          this.updated()
         }
       }
       return
@@ -190,7 +190,12 @@ export class PlayerClass extends EventEmitter {
   startContinuousPlay(songs: SearchResult[]) {
     this.isPlayingContinuously = true
     this.continuousPlaylist = songs
-    console.log(songs[0])
+
+    this.updated()
+  }
+
+  updated () {
+    this.emit('updated')
   }
 }
 
