@@ -52,9 +52,9 @@ const initialState: PlayerState = {
 export const PlayerContext = createContext<PlayerStore>({ state: initialState })
 
 function calculateProgress(song: CurrentSong) {
-  return (song.totalTime === 0
+  return song ? (song.totalTime === 0
     ? 0
-    : (song.timeElapsed / song.totalTime * 100))
+    : (song.timeElapsed / song.totalTime * 100)) : 0
 }
 
 export const reducer = (
