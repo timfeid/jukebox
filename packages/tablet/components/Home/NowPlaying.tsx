@@ -12,12 +12,12 @@ export default class NowPlaying extends React.Component {
     albumArt = albumArt ? albumArt.replace(/w120-h120/, 'w135-h135') : ''
     return (
       <div className="w-full h-full flex flex-col items-center pt-4">
-        <div className="flex-grow flex items-center flex-col">
+        <div className="flex-grow flex items-center flex-col w-full">
           <img className="object-contain" src={albumArt} />
-          <div className="text-xl font-bold pt-3 whitespace-nowrap overflow-hidden overflow-ellipsis text-center max-w-10/12">
+          <div className="text-xl font-bold pt-3 whitespace-nowrap overflow-hidden overflow-ellipsis text-center w-10/12">
             {this.context.state.currentSong.title}
           </div>
-          <div className="text-xl font-light whitespace-nowrap overflow-hidden overflow-ellipsis text-center max-w-10/12">
+          <div className="text-xl font-light whitespace-nowrap overflow-hidden overflow-ellipsis text-center w-10/12">
             {this.context.state.currentSong.artist}
           </div>
         </div>
