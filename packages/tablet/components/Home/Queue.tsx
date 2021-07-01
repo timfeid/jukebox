@@ -12,7 +12,7 @@ export default class Queue extends React.Component {
     const {queue} = this.context.state
 
     return queue.map((song, key) => {
-      return <SongCard {...song} key={key} className={"mb-3"} />
+      return <div><SongCard {...song} key={key} className={"mb-3"} /></div>
     })
   }
 
@@ -24,12 +24,8 @@ export default class Queue extends React.Component {
     }
 
     return (
-      <div className={Styles.queueContainer}>
-        <div className={Styles.queue}>
-
-          <h1 className="text-lg mb-3 font-thin text-center">On deck</h1>
-          {this.songCards()}
-        </div>
+      <div className="w-10/12">
+        {this.songCards()}
       </div>
     )
   }

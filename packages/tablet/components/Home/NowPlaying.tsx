@@ -11,13 +11,13 @@ export default class NowPlaying extends React.Component {
     let albumArt = this.context.state.currentSong.albumArt
     albumArt = albumArt ? albumArt.replace(/w120-h120/, 'w135-h135') : ''
     return (
-      <div className="w-full h-full flex flex-col items-center pt-4">
-        <div className="flex-grow flex items-center flex-col w-full">
+      <div className="w-full h-full flex flex-col items-center justify-center pt-4">
+        <div className="flex-grow flex items-center flex-col w-full justify-center">
           <img className="object-contain" src={albumArt} />
-          <div className="text-xl font-bold pt-3 whitespace-nowrap overflow-hidden overflow-ellipsis text-center w-10/12">
+          <div className="text-xl font-bold pt-3 text-center w-10/12">
             {this.context.state.currentSong.title}
           </div>
-          <div className="text-xl font-light whitespace-nowrap overflow-hidden overflow-ellipsis text-center w-10/12">
+          <div className="text-xl font-light text-center w-10/12">
             {this.context.state.currentSong.artist}
           </div>
         </div>

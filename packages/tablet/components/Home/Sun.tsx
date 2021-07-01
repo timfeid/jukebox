@@ -23,14 +23,14 @@ export default class Sun extends React.Component<MyProps> {
       const color = chroma.scale(this.context.state.sun.isDaytime ? sunsetScale : sunriseScale)
 
       sun = (
-        <div style={{width: '175px'}} className={this.props.className}>
+        <div style={{width: '135px'}} className={this.props.className}>
           <CircularProgressbarWithChildren value={percentage} strokeWidth={2} styles={buildStyles({
             pathColor: color(percentage / 100),
           })}>
             <div className="text-md">
-              {this.context.state.sun.isDaytime ? 'Sunset' : 'Sunrise'}
+              {this.context.state.sun.isDaytime ? 'Sunset' : 'Sunrise'} at
             </div>
-            <div className="text-2xl">
+            <div className="text-xl">
               {this.context.state.sun.isDaytime ? sunset.format('hh:mmA') : sunrise.format('hh:mmA')}
             </div>
 

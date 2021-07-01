@@ -13,16 +13,6 @@ export default function WeatherComponent () {
   let weather = state.weather.state
   weather = weather[0].toUpperCase() + weather.substring(1)
 
-  const daysOfTheWeek = [
-    'Sun',
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-  ]
-
   const color = chroma.scale(['#b6d0fa', '#c5d9fb', '#d4e3fc', '#e3ecfd', '#f1f5fe', '#fff3f0', '#ffe6e1', '#fddad3', '#fccdc4', '#fac1b6'])
 
   function getTempColor(weather: number) {
@@ -43,7 +33,7 @@ export default function WeatherComponent () {
           <WeatherIcon
             title={state.weather.state}
             path={state.weather.icon}
-            size={200}
+            size={150}
           />
         </div>
         <div className={Styles.temperature}>

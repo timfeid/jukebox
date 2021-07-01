@@ -15,25 +15,40 @@ const HomeComponent = () => {
   const homeContext = useHomeContext()
   const playerContext = usePlayerContext()
 
+  const daysOfTheWeek = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+  ]
+
   return (
     <div className="flex w-full h-full items-center">
-      <div className={`flex-grow grid grid-cols-${playerContext.state.queue.length ? 3 : 4} auto-rows-fr`}>
-        {playerContext.state.currentSong && <Tile title="Now Playing">
+      <div className={`flex-grow grid grid-cols-4 ${playerContext.state.queue.length > 0 ? 'grid-rows-3' : 'auto-rows-fr'}`}>
+        {playerContext.state.currentSong && <Tile rowSpan={2} title="Now Playing">
           <NowPlaying />
         </Tile>}
         <Tile title="Time">
-          <div className="text-5xl text-center leading-tight">
-            {dayjs().format('MMM D')}<br />
+          <div className="text-4xl text-center leading-tight flex items-center justify-center">
+            {daysOfTheWeek[dayjs().day()]}, {dayjs().format('MMM D')}<br />
             {dayjs().format('h:mmA')}
           </div>
         </Tile>
         <Tile title="Livingston"><WeatherComponent /></Tile>
+        {playerContext.state.queue && playerContext.state.queue.length > 0 && <Tile title="Queue" rowSpan={3}>
+          <Queue />
+
+        </Tile>}
         {homeContext.state.sun?.isDaytime ? <Tile title="UV Index">
-          <UVIndex />
+          <UVIndex className="m-auto" />
         </Tile> : null}
+
         <Tile title="Sun">
 
-          <Sun />
+          <Sun className="m-auto" />
         </Tile>
         {homeContext.state.washer && homeContext.state.washer.state === 'on' ? <Tile title="Washer">
           <WasherDryer type="washer" />
@@ -46,7 +61,6 @@ const HomeComponent = () => {
         </Tile>
       </div>
 
-      <Queue />
     </div>
   )
 }

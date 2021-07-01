@@ -1,4 +1,4 @@
-$uvSize: 175px;
+$uvSize: 135px;
 
 .queueContainer {
   width: 22rem;
@@ -49,13 +49,13 @@ $uvSize: 175px;
   justify-content: center;
   flex-direction: column;
   &Description {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
   &Number {
-    font-size: 3rem;
-    line-height: 3rem;
+    font-size: 1.25rem;
+    line-height: 1.25rem;
   }
   &Updated {
-    font-size: .85rem;
+    font-size: .5rem;
   }
 }
