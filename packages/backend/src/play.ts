@@ -1,13 +1,13 @@
 import { SearchResult } from '@gym/ytm-api'
+import dayjs from 'dayjs'
 import EventEmitter from 'events'
+import {
+  subscribeEntities
+} from "home-assistant-js-websocket"
 import ytdl from 'ytdl-core'
+import { HaConnection } from './homeassistant/connection'
 import { prisma } from './prisma-client'
 import { CurrentSong } from './schema/current-song'
-import dayjs from 'dayjs'
-import {
-  subscribeEntities,
-} from "home-assistant-js-websocket";
-import { HaConnection } from './homeassistant/connection'
 
 const MEDIA_PLAYER_ENTITY_ID = process.env.MEDIA_PLAYER_ENTITY_ID
 type QueuedSong = SearchResult & { url?: string }
@@ -125,6 +125,7 @@ export class PlayerClass extends EventEmitter {
 
       return highestAudio[0].url
     } catch (e) {
+      console.log(e)
       console.log(':(')
 
     }
