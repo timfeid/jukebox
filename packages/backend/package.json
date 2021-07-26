@@ -49,6 +49,7 @@
     "netgear": "^4.3.2",
     "prisma": "^2.22.1",
     "ws": "^7.5.0",
+    "youtube-dl-exec": "^1.2.4",
     "ytdl-core": "^4.9.0"
   }
 }
