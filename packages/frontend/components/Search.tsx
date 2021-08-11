@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { createRef, useEffect } from 'react'
 import { request } from '../fetcher/graphql'
 import Styles from '../styles/Search.module.scss'
 import SongCard from './SongCard'
@@ -22,7 +22,7 @@ export default class Search extends React.Component {
     suggestions: [],
   }
 
-
+  private searchRef = createRef<HTMLFormElement>()
 
   submit = async (e?: React.FormEvent) => {
     if (e) {
@@ -84,6 +84,16 @@ export default class Search extends React.Component {
     })
   }
 
+  resetSearchAndFocus = () => {
+    this.setState({
+      value: '',
+      results: null,
+      suggestions: [],
+    })
+
+    this.searchRef.current.focus()
+  }
+
   populateSuggestions = async () => {
     const response = await request(`query($input: String!) {
       suggestions(input: $input) {
@@ -136,7 +146,7 @@ export default class Search extends React.Component {
 
     return (
       <div className={Styles.searchFormSuffix}>
-        <FaTimes onClick={this.resetSearch} />
+        <FaTimes onClick={this.resetSearchAndFocus} />
       </div>
     )
   }
@@ -193,6 +203,7 @@ export default class Search extends React.Component {
             type="text"
             value={this.state.value}
             onChange={this.setSearchValue}
+            ref={this.searchRef}
           />
 
           {this.suffix()}
