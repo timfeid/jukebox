@@ -18,12 +18,12 @@ function generateSongQueue(player: PlayerState) {
 export default function Home() {
   const { state } = usePlayerContext()
 
-  const continuouslyPlay = async (playlistId: string) => {
-    const response = await request(`mutation($playlistId: String!) {
-      continuousPlay(continuousPlay: true, playlistId: $playlistId) {
+  const continuouslyPlay = async (playlistId: string, videos = false) => {
+    const response = await request(`mutation($playlistId: String!, $videos: Boolean!) {
+      continuousPlay(continuousPlay: true, playlistId: $playlistId, videos: $videos) {
         isPlayingContinuously
       }
-    }`, {playlistId})
+    }`, {playlistId, videos})
 
     console.log(response)
   }
@@ -75,6 +75,9 @@ export default function Home() {
           </div>
           <div onClick={() => continuouslyPlay('VLPLY-ORNzeWA4-KT2scgfKiQrOmQ1ihDpHB')}>
             Toons
+          </div>
+          <div onClick={() => continuouslyPlay('PL6bPxvf5dW5clc3y9wAoslzqUrmkZ5c-u', true)}>
+            Top 1000 of all time
           </div>
         </div>
       </div>

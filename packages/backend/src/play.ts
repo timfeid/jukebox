@@ -208,8 +208,18 @@ export class PlayerClass extends EventEmitter {
     this.isPlayingContinuously = false
   }
 
-  startContinuousPlay(songs: SearchResult[]) {
+  startContinuousPlay(songs: SearchResult[], shuffle = false) {
     this.isPlayingContinuously = true
+
+    if (shuffle) {
+      for (var i = songs.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1))
+        var temp = songs[i]
+        songs[i] = songs[j]
+        songs[j] = temp
+      }
+    }
+
     this.continuousPlaylist = songs
 
     this.updated()
