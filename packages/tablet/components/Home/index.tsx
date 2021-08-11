@@ -59,6 +59,11 @@ const HomeComponent = () => {
         <Tile title="People">
           <People />
         </Tile>
+        <Tile title="Jukebox">
+          <div className="m-auto rounded-lg" style={{background: 'white', padding: '.5rem', marginTop: '.5rem'}}>
+            <img src="/qrcode.png" style={{width: 120, height: 120}} />
+          </div>
+        </Tile>
       </div>
 
     </div>
