@@ -121,9 +121,11 @@ export class PlayerClass extends EventEmitter {
 
       const info = await ytdl.getInfo(youtubeId)
       const highestAudio = info.formats.sort((a,b) => a.audioBitrate > b.audioBitrate ? -1 : 1)
-      console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, highestAudio[0].url)
+      const highestAudioWithVideo = highestAudio.filter(v => v.hasVideo)
+      const url = highestAudioWithVideo[0]?.url || highestAudio[0].url
+      console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, url)
 
-      return highestAudio[0].url
+      return url
     } catch (e) {
       console.log(e)
       console.log(':(')
