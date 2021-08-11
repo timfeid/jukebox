@@ -76,8 +76,8 @@ export default function Home() {
           <div onClick={() => continuouslyPlay('VLPLY-ORNzeWA4-KT2scgfKiQrOmQ1ihDpHB')}>
             Toons
           </div>
-          <div onClick={() => continuouslyPlay('PL6bPxvf5dW5clc3y9wAoslzqUrmkZ5c-u', true)}>
-            Top 1000 of all time
+          <div onClick={() => continuouslyPlay('PL0pMsxvRvrbxR4RwEE3Yc1ADk7lfJqmCx', true)}>
+            Top 250 EDM of 2010s
           </div>
         </div>
       </div>
