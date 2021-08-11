@@ -12,13 +12,17 @@ const NowPlaying = () => {
   subscribe()
 
   if (state.currentSong) {
-    const width = (state.currentSong.totalTime === 0
+    let width = (state.currentSong.totalTime === 0
       ? 0
-      : (state.currentSong.timeElapsed / state.currentSong.totalTime * 100)).toFixed(2)
+      : (state.currentSong.timeElapsed / state.currentSong.totalTime * 100))
+
+    if (isNaN(width)) {
+      width = 0
+    }
 
     return <div className={Styles.nowPlaying}>
       <div className={Styles.progressContainer}>
-        <div className={Styles.progressBar} style={{width: `${width}%`}}></div>
+        <div className={Styles.progressBar} style={{width: `${width.toFixed(2)}%`}}></div>
       </div>
       <div className={Styles.nowPlayingContainer}>
         <SongCard {...state.currentSong} />
