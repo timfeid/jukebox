@@ -66,7 +66,7 @@ export default function Home() {
         Continous play is {state.isPlayingContinuously ? 'on' : 'off'}
       </h1>
       <div className={Styles.grid}>
-        <div style={{gridTemplateColumns: 'repeat(3, minmax(0, 1fr))'}} className="grid justify-between w-full m-3">
+        <div style={{gridTemplateColumns: 'repeat(4, minmax(0, 1fr))'}} className="grid justify-between w-full m-3">
           {state.isPlayingContinuously && <div onClick={() => stopContinuouslyPlay()}>
             Turn off
           </div>}

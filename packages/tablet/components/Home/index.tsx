@@ -51,10 +51,10 @@ const HomeComponent = () => {
           <Sun className="m-auto" />
         </Tile>
         {homeContext.state.washer && homeContext.state.washer.state === 'on' ? <Tile title="Washer">
-          <WasherDryer type="washer" />
+          <WasherDryer type="washer" className="m-auto" />
         </Tile> : null}
         {homeContext.state.dryer && homeContext.state.dryer.state === 'on' ? <Tile title="Dryer">
-          <WasherDryer type="dryer" />
+          <WasherDryer type="dryer" className="m-auto" />
         </Tile> : null}
         <Tile title="People">
           <People />

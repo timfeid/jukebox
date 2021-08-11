@@ -13,7 +13,7 @@ export default class NowPlaying extends React.Component {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center pt-4">
         <div className="flex-grow flex items-center flex-col w-full justify-center">
-          <img className="object-contain" src={albumArt} />
+          <img className="object-contain" src={albumArt} style={{padding: '0 1.5rem'}} />
           <div className="text-xl font-bold pt-3 text-center w-10/12">
             {this.context.state.currentSong.title}
           </div>

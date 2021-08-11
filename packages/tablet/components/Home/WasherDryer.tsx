@@ -24,7 +24,7 @@ export default class WasherDryer extends React.Component<MyProps> {
       const timeRemaining = appliance.completionTime.diff(dayjs(), 'minute')
       const icon = this.props.type === 'dryer' ? <GiHeatHaze /> : <CgSmartHomeWashMachine />
       return (
-        <div style={{width: '175px'}} className={this.props.className}>
+        <div style={{width: '135px'}} className={this.props.className}>
           <CircularProgressbarWithChildren strokeWidth={2} value={percentage}>
             <div className="text-3xl mb-1">
               {icon}

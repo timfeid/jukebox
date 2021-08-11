@@ -68,7 +68,7 @@ export default function index() {
   return (
     <div className={`flex ${player.state.currentSong ? 'playing-old' : null}`}>
       <div className={layout.nav}>
-        <div>
+        <div className="mx-3">
           <FaHome size="24" style={styleForNavIndex(0)} />
           <FaMusic size="24" style={styleForNavIndex(1)} />
         </div>
