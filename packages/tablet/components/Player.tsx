@@ -70,13 +70,22 @@ export default function Home() {
             Turn off
           </div>}
           <div onClick={() => continuouslyPlay('VLRDTMAK5uy_kset8DisdE7LSD4TNjEVvrKRTmG7a56sY')}>
-            Autoplay mix
+            Tim's autoplay
           </div>
-          <div onClick={() => continuouslyPlay('PLDoNWpWHi2nLqrJyJTf19nueOiEleQqVL')}>
-            Top 100 of 2000s
+          <div onClick={() => continuouslyPlay('RDCLAK5uy_l2pHac-aawJYLcesgTf67gaKU-B9ekk1o')}>
+            00's hits
           </div>
-          <div onClick={() => continuouslyPlay('PL0pMsxvRvrbxR4RwEE3Yc1ADk7lfJqmCx', true)}>
-            Top 250 EDM of 2010s
+          <div onClick={() => continuouslyPlay('RDCLAK5uy_mGYde2Wyx9INZd6GbPcMWkxDOu6Utmedw')}>
+            10's hits
+          </div>
+          <div onClick={() => continuouslyPlay('RDCLAK5uy_k2u2jgHBqCiaxlmoV-1AO227ocJLIVKbk')}>
+            Pop Punk
+          </div>
+          <div onClick={() => continuouslyPlay('RDCLAK5uy_kTryekD5_prNBl8eu44N_x2w6zPyZUNt0')}>
+            Southern BBQ
+          </div>
+          <div onClick={() => continuouslyPlay('PL4fGSI1pDJn6O1LS0XSdF3RyO0Rq_LDeI')}>
+            Top 100 in the USA
           </div>
           <div onClick={() => continuouslyPlay('PLgrYDatnhwJKRKu5JWyh0WNjveSDHBIik', true)}>
             Top 100 EDM
