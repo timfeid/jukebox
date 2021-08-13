@@ -121,8 +121,8 @@ export class PlayerClass extends EventEmitter {
 
       const info = await ytdl.getInfo(youtubeId)
       const format = ytdl.chooseFormat(info.formats, {
-        quality: 'highestvideo',
-        filter: 'audioandvideo',
+        // most reliable
+        quality: 'highestaudio',
       })
       const url = format.url
       console.log('Retrieved audio from YT, playing to', MEDIA_PLAYER_ENTITY_ID, url)

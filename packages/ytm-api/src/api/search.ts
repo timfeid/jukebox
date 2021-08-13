@@ -8,8 +8,8 @@ export async function search(query: string) {
   try {
     const response = await createRequest('search', {
       query,
-      // params: 'EgWKAQIIAWoMEAMQCRAOEAoQBRAE',
-      params: 'EgWKAQIQAWoMEAMQCRAOEAoQBRAE',
+      params: 'EgWKAQIIAWoMEAMQCRAOEAoQBRAE',
+      // params: 'EgWKAQIQAWoMEAMQCRAOEAoQBRAE',
     }, true)
     results = [...results, ...parseSearch(response.data)]
     // console.log(response.data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].musicShelfRenderer.contents)
@@ -21,8 +21,8 @@ export async function search(query: string) {
       const response2 = await createRequest('search', {
         query,
         ctoken,
-        // params: 'EgWKAQIIAWoMEAMQCRAOEAoQBRAE',
-        params: 'EgWKAQIQAWoMEAMQCRAOEAoQBRAE',
+        params: 'EgWKAQIIAWoMEAMQCRAOEAoQBRAE',
+        // params: 'EgWKAQIQAWoMEAMQCRAOEAoQBRAE',
       })
       results = [...results, ...parseSearch(response2.data)]
       continuations = response2.data.contents.sectionListRenderer.contents[0].musicShelfRenderer.continuations
