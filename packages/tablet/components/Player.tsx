@@ -65,7 +65,7 @@ export default function Home() {
         Continous play is {state.isPlayingContinuously ? 'on' : 'off'}
       </h1>
       <div className={Styles.grid}>
-        <div style={{gridTemplateColumns: 'repeat(8, minmax(0, 1fr))'}} className="grid justify-between w-full m-3">
+        <div style={{gridTemplateColumns: 'repeat(9, minmax(0, 1fr))'}} className="grid justify-between w-full m-3">
           {state.isPlayingContinuously && <div onClick={() => stopContinuouslyPlay()}>
             Turn off
           </div>}
@@ -78,6 +78,9 @@ export default function Home() {
           <div onClick={() => continuouslyPlay('VLRDCLAK5uy_mGYde2Wyx9INZd6GbPcMWkxDOu6Utmedw')}>
             10's hits
           </div>
+          <div onClick={() => continuouslyPlay('VLPLY-ORNzeWA490RtS1WF8NBOtkt61miyO-')}>
+            Emo
+          </div>
           <div onClick={() => continuouslyPlay('VLRDCLAK5uy_k2u2jgHBqCiaxlmoV-1AO227ocJLIVKbk')}>
             Pop Punk
           </div>
@@ -85,7 +88,7 @@ export default function Home() {
             Southern BBQ
           </div>
           <div onClick={() => continuouslyPlay('VLPL4fGSI1pDJn6O1LS0XSdF3RyO0Rq_LDeI')}>
-            Top 100 in the USA
+            Top 100
           </div>
           <div onClick={() => continuouslyPlay('PLgrYDatnhwJKRKu5JWyh0WNjveSDHBIik', true)}>
             Top 100 EDM
