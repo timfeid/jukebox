@@ -113,6 +113,12 @@ export class PlayerClass extends EventEmitter {
       entity_id: MEDIA_PLAYER_ENTITY_ID,
       media_content_id: url,
       media_content_type: 'video',
+      extra: {
+        metadataType: 1,
+        title: this._currentSong.title,
+        subtitle: this._currentSong.artist,
+        images: [{url: this._currentSong.albumArt}],
+      },
     })
   }
 
