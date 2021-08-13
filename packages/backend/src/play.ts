@@ -219,7 +219,7 @@ export class PlayerClass extends EventEmitter {
     this.isPlayingContinuously = false
   }
 
-  startContinuousPlay(songs: SearchResult[], shuffle = false) {
+  startContinuousPlay(songs: SearchResult[], shuffle = true) {
     this.isPlayingContinuously = true
 
     if (shuffle) {
