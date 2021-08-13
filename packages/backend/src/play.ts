@@ -114,11 +114,13 @@ export class PlayerClass extends EventEmitter {
       media_content_id: url,
       media_content_type: 'audio',
       extra: {
-        metadataType: 3,
-        title: this._currentSong.title,
-        artist: this._currentSong.artist,
-        albumName: this._currentSong.album,
-        images: [{url: this._currentSong.albumArt}],
+        metadata: {
+          metadataType: 3,
+          title: this._currentSong.title,
+          artist: this._currentSong.artist,
+          albumName: this._currentSong.album,
+          images: [{url: this._currentSong.albumArt}],
+        }
       },
     })
   }
