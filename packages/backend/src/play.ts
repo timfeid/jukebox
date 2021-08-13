@@ -119,7 +119,7 @@ export class PlayerClass extends EventEmitter {
           title: this._currentSong.title,
           artist: this._currentSong.artist,
           albumName: this._currentSong.album,
-          images: [{url: this._currentSong.albumArt}],
+          images: [{url: this._currentSong.albumArt.replace(/w120-h120/, 'w400-h400')}],
         }
       },
     })
