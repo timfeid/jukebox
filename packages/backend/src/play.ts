@@ -112,7 +112,7 @@ export class PlayerClass extends EventEmitter {
     await this.connection.callService('media_player', 'play_media', {
       entity_id: MEDIA_PLAYER_ENTITY_ID,
       media_content_id: url,
-      media_content_type: 'music',
+      media_content_type: 'audio',
       extra: {
         metadataType: 3,
         title: this._currentSong.title,
