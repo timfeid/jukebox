@@ -72,19 +72,19 @@ export default function Home() {
           <div onClick={() => continuouslyPlay('VLRDTMAK5uy_kset8DisdE7LSD4TNjEVvrKRTmG7a56sY')}>
             Tim's autoplay
           </div>
-          <div onClick={() => continuouslyPlay('RDCLAK5uy_l2pHac-aawJYLcesgTf67gaKU-B9ekk1o')}>
+          <div onClick={() => continuouslyPlay('VLRDCLAK5uy_l2pHac-aawJYLcesgTf67gaKU-B9ekk1o')}>
             00's hits
           </div>
-          <div onClick={() => continuouslyPlay('RDCLAK5uy_mGYde2Wyx9INZd6GbPcMWkxDOu6Utmedw')}>
+          <div onClick={() => continuouslyPlay('VLRDCLAK5uy_mGYde2Wyx9INZd6GbPcMWkxDOu6Utmedw')}>
             10's hits
           </div>
-          <div onClick={() => continuouslyPlay('RDCLAK5uy_k2u2jgHBqCiaxlmoV-1AO227ocJLIVKbk')}>
+          <div onClick={() => continuouslyPlay('VLRDCLAK5uy_k2u2jgHBqCiaxlmoV-1AO227ocJLIVKbk')}>
             Pop Punk
           </div>
-          <div onClick={() => continuouslyPlay('RDCLAK5uy_kTryekD5_prNBl8eu44N_x2w6zPyZUNt0')}>
+          <div onClick={() => continuouslyPlay('VLRDCLAK5uy_kTryekD5_prNBl8eu44N_x2w6zPyZUNt0')}>
             Southern BBQ
           </div>
-          <div onClick={() => continuouslyPlay('PL4fGSI1pDJn6O1LS0XSdF3RyO0Rq_LDeI')}>
+          <div onClick={() => continuouslyPlay('VLPL4fGSI1pDJn6O1LS0XSdF3RyO0Rq_LDeI')}>
             Top 100 in the USA
           </div>
           <div onClick={() => continuouslyPlay('PLgrYDatnhwJKRKu5JWyh0WNjveSDHBIik', true)}>
