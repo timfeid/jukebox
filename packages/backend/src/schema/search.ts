@@ -18,4 +18,10 @@ export class SearchResult implements BaseSearchResult {
 
   @Field()
   youtubeId: string
+
+  @Field(() => [String], { nullable: true })
+  upvotes?: string[]
+
+  @Field(() => [String], { nullable: true })
+  downvotes?: string[]
 }

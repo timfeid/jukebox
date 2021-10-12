@@ -6,6 +6,7 @@ export const pubSub = new PubSub()
 export enum TOPICS {
   QUEUE = "QUEUE",
   CURRENT_SONG = "CURRENT_SONG",
+  BROADCAST = "BROADCAST",
 }
 
 Player.on('updated', () => {

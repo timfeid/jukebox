@@ -1,4 +1,4 @@
-import { Arg, Args, Mutation, Query, Resolver, Subscription } from "type-graphql";
+import { Arg, Args, Ctx, Field, Mutation, ObjectType, Query, Resolver, Root, Subscription } from "type-graphql";
 import { PlayerResult } from "../schema/player";
 import { Player } from "../play";
 import { SearchResult } from "../schema/search";
@@ -6,9 +6,24 @@ import { pubSub, TOPICS } from "../pubsub";
 import { API } from "@gym/ytm-api";
 import ytdle from 'youtube-dl-exec'
 import { existsSync, readFileSync, writeFileSync, writeSync } from "fs";
+import Container, { Service } from "typedi";
+import { UserService } from "../services/user.service";
 
+@ObjectType()
+class Broadcast {
+  @Field()
+  message: string
+
+  @Field()
+  type: string
+
+}
+
+@Service()
 @Resolver(PlayerResult)
 export class PlayerResolver {
+  constructor(private readonly userService = Container.get(UserService)) {}
+
   @Query(returns => PlayerResult)
   player(): PlayerResult {
     return Player
@@ -76,6 +91,38 @@ export class PlayerResolver {
     return Player
   }
 
+  @Mutation(returns => Boolean)
+  async upvote(@Ctx() ctx, @Arg('songIndex') songIndex: number) {
+    const user = await this.userService.getUser(ctx.ip)
+    if (user) {
+      const song = Player.upvote(songIndex, user.mac)
+      if (song) {
+        pubSub.publish(TOPICS.BROADCAST, {
+          type: 'info',
+          message: `${user.name} upvoted ${song.artist} - ${song.title}`,
+        })
+      }
+    }
+
+    return true
+  }
+
+  @Mutation(returns => Boolean)
+  async downvote(@Ctx() ctx, @Arg('songIndex') songIndex: number) {
+    const user = await this.userService.getUser(ctx.ip)
+    if (user) {
+      const song = Player.downvote(songIndex, user.mac)
+      if (song) {
+        pubSub.publish(TOPICS.BROADCAST, {
+          type: 'info',
+          message: `${user.name} downvoted ${song.artist} - ${song.title}`,
+        })
+      }
+    }
+
+    return true
+  }
+
   @Mutation(returns => PlayerResult)
   async reset() {
     await Player.clearMediaPlayer()
@@ -88,5 +135,14 @@ export class PlayerResolver {
   })
   onPlayerUpdated(): PlayerResult {
     return Player
+  }
+
+  @Subscription(() => Broadcast, {
+    topics: [TOPICS.BROADCAST],
+  })
+  onBroadcast(
+    @Root() payload: Broadcast,
+  ): Broadcast {
+    return payload
   }
 }

@@ -11,5 +11,10 @@ export async function createApolloServer() {
 
   return new ApolloServer({
     schema,
+    context: ({ctx}) => {
+      // console.log(ctx.req)
+
+      return ctx
+    },
   })
 }

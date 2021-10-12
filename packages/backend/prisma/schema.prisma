@@ -26,3 +26,8 @@ model PreviousPlays {
   createdAt   DateTime
   updatedAt   DateTime  @updatedAt
 }
+
+model User {
+  mac  String @id
+  name        String
+}

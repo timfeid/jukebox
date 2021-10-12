@@ -10,7 +10,8 @@ import { prisma } from './prisma-client'
 import { CurrentSong } from './schema/current-song'
 
 const MEDIA_PLAYER_ENTITY_ID = process.env.MEDIA_PLAYER_ENTITY_ID
-type QueuedSong = SearchResult & { url?: string }
+const VOTE_MAX = 2
+type QueuedSong = SearchResult & { url?: string, upvotes: string[], downvotes: string[] }
 
 type MediaPlayerEntity = {
   state: 'idle' | 'playing' | 'unknown'
@@ -169,7 +170,11 @@ export class PlayerClass extends EventEmitter {
   }
 
   add(song: SearchResult) {
-    this.queue.push(song)
+    this.queue.push({
+      ...song,
+      upvotes: [],
+      downvotes: [],
+    })
     this.emit('added-song')
 
     this.nextSong()
@@ -231,13 +236,67 @@ export class PlayerClass extends EventEmitter {
       }
     }
 
-    this.continuousPlaylist = songs
+    this.continuousPlaylist = songs.map(song => ({
+      ...song,
+      upvotes: [],
+      downvotes: [],
+    }))
 
     this.updated()
   }
 
   updated () {
     this.emit('updated')
+  }
+
+  upvote(queueIndex: number, mac: string) {
+    const song = this._queue[queueIndex]
+    if (song) {
+      const sneakyUpvoteIndex = song.downvotes.findIndex(id => id === mac)
+      if (sneakyUpvoteIndex !== -1) {
+        song.downvotes.splice(sneakyUpvoteIndex, 1)
+      }
+      const index = song.upvotes.findIndex(id => id === mac)
+      if (index === -1) {
+        song.upvotes.push(mac)
+      } else {
+        song.upvotes.splice(index)
+      }
+
+      if (song.upvotes.length > VOTE_MAX) {
+        this._queue.splice(queueIndex, 1)
+        this._queue.unshift(song)
+      } else {
+        this._queue[queueIndex] = song
+      }
+
+      return song
+    }
+  }
+
+  downvote(queueIndex: number, mac: string) {
+    const song = this._queue[queueIndex]
+    if (song) {
+      const sneakyUpvoteIndex = song.upvotes.findIndex(id => id === mac)
+      if (sneakyUpvoteIndex !== -1) {
+        song.upvotes.splice(sneakyUpvoteIndex, 1)
+      }
+
+      const index = song.downvotes.findIndex(id => id === mac)
+      if (index === -1) {
+        song.downvotes.push(mac)
+      } else {
+        song.downvotes.splice(index)
+      }
+
+      if (song.downvotes.length > VOTE_MAX) {
+        this._queue.splice(queueIndex, 1)
+      } else {
+        this._queue[queueIndex] = song
+      }
+
+      return song
+    }
   }
 }
 

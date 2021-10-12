@@ -4,6 +4,7 @@ import {SearchResult} from '../../backend/src/schema/search'
 import {CurrentSong} from '../../backend/src/schema/current-song'
 import apolloClient from '../apollo-client'
 import { request } from '../fetcher/graphql'
+import { toast } from 'react-toastify'
 
 type PlayerStore = {
   state: PlayerState
@@ -92,6 +93,8 @@ export const getCurrentSong = (dispatch: (value: PlayerAction) => void) => {
         album
         albumArt
         artist
+        upvotes
+        downvotes
       }
     }
   }`).then(({player}) => {
@@ -103,8 +106,26 @@ export const getCurrentSong = (dispatch: (value: PlayerAction) => void) => {
 }
 
 export const subscribe = () => {
-
   const { dispatch } = usePlayerContext()
+
+  useEffect(() => {
+    apolloClient.subscribe({
+      query: gql`
+        subscription {
+          onBroadcast {
+            message
+            type
+          }
+        }
+      `
+    }).subscribe(response => {
+      if (response?.data?.onBroadcast) {
+        toast[response.data.onBroadcast.type](response.data.onBroadcast.message, {
+          hideProgressBar: true,
+        })
+      }
+    })
+  }, [])
 
   useEffect(() => {
     apolloClient.subscribe({
@@ -124,6 +145,8 @@ export const subscribe = () => {
               album
               albumArt
               artist
+              upvotes
+              downvotes
             }
           }
         }

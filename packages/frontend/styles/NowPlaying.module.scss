@@ -3,9 +3,10 @@
   width: 100%;
   position: fixed;
   bottom: 0;
+  background-color: #000;
   &Container {
     max-width: 36rem;
-    padding: .5rem 0;
+    padding: .5rem;
     margin: auto;
   }
 }
