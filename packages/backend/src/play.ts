@@ -252,12 +252,14 @@ export class PlayerClass extends EventEmitter {
   upvote(queueIndex: number, mac: string) {
     const song = this._queue[queueIndex]
     if (song) {
+      let returnSong = false
       const sneakyUpvoteIndex = song.downvotes.findIndex(id => id === mac)
       if (sneakyUpvoteIndex !== -1) {
         song.downvotes.splice(sneakyUpvoteIndex, 1)
       }
       const index = song.upvotes.findIndex(id => id === mac)
       if (index === -1) {
+        returnSong = true
         song.upvotes.push(mac)
       } else {
         song.upvotes.splice(index)
@@ -270,13 +272,16 @@ export class PlayerClass extends EventEmitter {
         this._queue[queueIndex] = song
       }
 
-      return song
+      if (returnSong) {
+        return song
+      }
     }
   }
 
   downvote(queueIndex: number, mac: string) {
     const song = this._queue[queueIndex]
     if (song) {
+      let returnSong = false
       const sneakyUpvoteIndex = song.upvotes.findIndex(id => id === mac)
       if (sneakyUpvoteIndex !== -1) {
         song.upvotes.splice(sneakyUpvoteIndex, 1)
@@ -284,6 +289,7 @@ export class PlayerClass extends EventEmitter {
 
       const index = song.downvotes.findIndex(id => id === mac)
       if (index === -1) {
+        returnSong = true
         song.downvotes.push(mac)
       } else {
         song.downvotes.splice(index)
@@ -295,7 +301,9 @@ export class PlayerClass extends EventEmitter {
         this._queue[queueIndex] = song
       }
 
-      return song
+      if (returnSong) {
+        return song
+      }
     }
   }
 }
