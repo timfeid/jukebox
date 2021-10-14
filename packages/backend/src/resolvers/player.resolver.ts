@@ -30,8 +30,9 @@ export class PlayerResolver {
   }
 
   @Mutation(returns => PlayerResult)
-  play(@Args(type => SearchResult) song: SearchResult): PlayerResult {
-    Player.add(song)
+  async play(@Ctx() ctx, @Args(type => SearchResult) song: SearchResult): Promise<PlayerResult> {
+    const user = await this.userService.getUser(ctx.ip)
+    Player.add(song, user)
 
     return Player
   }

@@ -1,3 +1,4 @@
+import { User } from '.prisma/client'
 import { SearchResult } from '@gym/ytm-api'
 import dayjs from 'dayjs'
 import EventEmitter from 'events'
@@ -11,7 +12,7 @@ import { CurrentSong } from './schema/current-song'
 
 const MEDIA_PLAYER_ENTITY_ID = process.env.MEDIA_PLAYER_ENTITY_ID
 const VOTE_MAX = 2
-type QueuedSong = SearchResult & { url?: string, upvotes: string[], downvotes: string[] }
+type QueuedSong = SearchResult & { url?: string, upvotes: string[], downvotes: string[], user?: User, dateAdded: number }
 
 type MediaPlayerEntity = {
   state: 'idle' | 'playing' | 'unknown'
@@ -33,7 +34,7 @@ export class PlayerClass extends EventEmitter {
   private connection: HaConnection
   private timeout: NodeJS.Timeout
   public isPlayingContinuously = false
-  private continuousPlaylist: QueuedSong[] = []
+  private continuousPlaylist: (SearchResult & {url?: string})[] = []
   private grabbingNextUrl = false
 
   constructor () {
@@ -169,12 +170,15 @@ export class PlayerClass extends EventEmitter {
     })
   }
 
-  add(song: SearchResult) {
+  add(song: SearchResult, user?: User) {
     this.queue.push({
       ...song,
       upvotes: [],
       downvotes: [],
+      dateAdded: new Date().getTime(),
+      user,
     })
+    this.reorderQueue()
     this.emit('added-song')
 
     this.nextSong()
@@ -238,8 +242,6 @@ export class PlayerClass extends EventEmitter {
 
     this.continuousPlaylist = songs.map(song => ({
       ...song,
-      upvotes: [],
-      downvotes: [],
     }))
 
     this.updated()
@@ -249,25 +251,21 @@ export class PlayerClass extends EventEmitter {
     this.emit('updated')
   }
 
+  reorderQueue () {
+    this._queue = this.queue.sort((a,b) => {
+      const totalA = a.upvotes.length-a.downvotes.length
+      const totalB = b.upvotes.length-b.downvotes.length
+      if (totalA === totalB) {
+        return a.dateAdded > b.dateAdded ? 1 : -1
+      }
+
+      return totalA > totalB ? -1 : 1
+    })
+  }
+
   upvote(queueIndex: number, mac: string) {
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
-    // WE SHOULD ORDER THE QUEUE BY TOTAL LIKES - DISLIKES.
     const song = this._queue[queueIndex]
-    if (song) {
+    if (song && song.user?.mac !== mac) {
       let returnSong = false
       const sneakyUpvoteIndex = song.downvotes.findIndex(id => id === mac)
       if (sneakyUpvoteIndex !== -1) {
@@ -281,12 +279,7 @@ export class PlayerClass extends EventEmitter {
         song.upvotes.splice(index)
       }
 
-      if (song.upvotes.length > VOTE_MAX) {
-        this._queue.splice(queueIndex, 1)
-        this._queue.unshift(song)
-      } else {
-        this._queue[queueIndex] = song
-      }
+      this.reorderQueue()
 
       if (returnSong) {
         return song
@@ -296,7 +289,7 @@ export class PlayerClass extends EventEmitter {
 
   downvote(queueIndex: number, mac: string) {
     const song = this._queue[queueIndex]
-    if (song) {
+    if (song && song.user?.mac !== mac) {
       let returnSong = false
       const sneakyUpvoteIndex = song.upvotes.findIndex(id => id === mac)
       if (sneakyUpvoteIndex !== -1) {
@@ -311,11 +304,7 @@ export class PlayerClass extends EventEmitter {
         song.downvotes.splice(index)
       }
 
-      if (song.downvotes.length > VOTE_MAX) {
-        this._queue.splice(queueIndex, 1)
-      } else {
-        this._queue[queueIndex] = song
-      }
+      this.reorderQueue()
 
       if (returnSong) {
         return song
