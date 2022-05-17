@@ -1,0 +1,22 @@
+.nowPlaying {
+  border-top: 2px solid #fff;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  background-color: #000;
+  &Container {
+    max-width: 36rem;
+    padding: .5rem;
+    margin: auto;
+  }
+}
+.progressContainer {
+  height: 2px;
+  position: relative;
+  top: -2px;
+  width: 100vw;
+}
+.progressBar {
+  background: red;
+  height: 100%;
+}
