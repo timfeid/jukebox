@@ -4,18 +4,40 @@ import { request } from '../request'
 import { createResource, createSignal, Show, Suspense, For } from 'solid-js'
 import createDebounce from '@solid-primitives/debounce'
 import SongCard from './SongCard'
+import { FaSolidSearch } from 'solid-icons/fa'
 
 export default function Search () {
   const [search, setSearch] = createSignal('')
+  const [results, setResults] = createSignal([])
 
   const delayedSetSearch = createDebounce((val) => setSearch(val), 500)
 
-  const [results] = createResource<any[], string>(search, async (search) => {
+  const [suggestions] = createResource<any[], string>(search, async (search) => {
     if (!search) {
       return Promise.resolve([])
     }
 
-    const data = await request(gql`query($search: String!) {
+    const data = await request(gql`query($input: String!) {
+      suggestions(input: $input) {
+        runs {
+          text
+          bold
+        }
+        query
+      }
+    }`, {input: search})
+
+    return data.suggestions
+  })
+
+  const performSearch = async (e?: SubmitEvent) => {
+    if (e) {
+      e.preventDefault()
+    }
+
+    delayedSetSearch.clear()
+
+    request(gql`query($search: String!) {
       search(input: $search) {
         youtubeId
         title
@@ -23,13 +45,14 @@ export default function Search () {
         albumArt
         artist
       }
-    }`, {search})
+    }`, {search: search()}).then(data => setResults(data.search))
 
-    return data.search
-  })
+    setSearch('')
+  }
 
   const addSongToQueue = async (song) => {
     setSearch('')
+    setResults([])
 
     await request(gql`mutation($artist: String!, $album: String!, $albumArt: String!, $title: String!, $youtubeId: String!) {
       play(artist: $artist, album: $album, albumArt: $albumArt, title: $title, youtubeId: $youtubeId) {
@@ -42,12 +65,16 @@ export default function Search () {
         }
       }
     }`, song)
+  }
 
+  const setAndSearch = (val) => {
+    setSearch(val)
+    performSearch()
   }
 
   return (
     <div class={styles.searchContainer}>
-      <form onSubmit={delayedSetSearch.clear} class={styles.searchForm}>
+      <form onSubmit={performSearch} class={styles.searchForm}>
         <input
           placeholder="Search music"
           class={`input-text`}
@@ -73,6 +100,23 @@ export default function Search () {
           </Show>
         </Suspense>
       </div>
+
+      <Show when={suggestions() && suggestions().length > 0}>
+        <div class={styles.searchSuggestions}>
+          <For each={suggestions()}>
+            {suggestion => (
+              <div class={styles.searchSuggestionsItem} onClick={() => setAndSearch(suggestion.query)}>
+                <FaSolidSearch class="mr-4" />
+                <div>
+                  {suggestion.runs.map(run => {
+                    return run.bold ? <strong>{run.text}</strong> : <span>{run.text}</span>
+                  })}
+                </div>
+              </div>
+            )}
+          </For>
+        </div>
+      </Show>
     </div>
   )
 }
